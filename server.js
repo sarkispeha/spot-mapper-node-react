@@ -18,8 +18,16 @@ var mongoose = require('mongoose');
 
 var routes = require('./app/routes');
 var API =  require('./app/api/apiRoutes');
-// var Character = require('./models/character');
+var Point = require('./models/points');
+var config = require('./config')
+
 var app = express();
+
+//connect to database
+mongoose.connect(config.database);
+mongoose.connection.on('error', function() {
+  console.info('Error: Could not connect to MongoDB. Did you forget to run `mongod`?');
+});
 
 /*
 EXPRESS MIDDLEWARE
@@ -36,12 +44,12 @@ EXPRESS ROUTES
 */
 // app.get('/api/getPoints', API.allPoints);
 app.get('/api/getPoints', function(req, res, next){
-		console.log('allpoints called')
+		console.log('allpoints API called')
 		request.get('https://where-is-sark.herokuapp.com/api/getAllPoints', function(err, request, response){
 			if(err){
 				console.log('this is the err', err)
 			}else{
-				console.log('this is the response', response);
+				// console.log('this is the response', response);
 				res.send(response)
 			}
 		})

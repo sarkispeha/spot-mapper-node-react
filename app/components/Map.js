@@ -1,6 +1,6 @@
 import React from 'react';
 import {Link} from 'react-router';
-import { GoogleMapLoader, GoogleMap} from "react-google-maps";
+import { GoogleMapLoader, GoogleMap, Polyline} from "react-google-maps";
 import { default as _ } from "lodash";
 import MapStore from '../stores/MapStore';
 import MapActions from '../actions/MapActions';
@@ -28,6 +28,11 @@ class Map extends React.Component {
 	render() {
 		console.log('render firing from maps')
 		console.log('this.state.points', this.state.points)
+		var pathPointData = this.state.points;
+		var pathCoordinates = []
+		pathPointData.forEach(function(obj){
+			pathCoordinates.push({lat : obj.lat, lng : obj.long});
+		});
 		return (
 			<GoogleMapLoader
 				containerElement = {
@@ -45,6 +50,14 @@ class Map extends React.Component {
 						defaultZoom={5}
 	            		defaultCenter={{lat: 39.8275062, lng: -98.5810004}}
 	            	>
+	            	<Polyline
+	            		path={pathCoordinates}
+	            		geodesic= {true}
+						strokeColor= {'#FFFFFF'}
+						strokeOpacity= {1.0}
+						strokeWeight= {2}
+	            	>
+	            	</Polyline>
 	            	</GoogleMap>
 				}
 			/>

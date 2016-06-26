@@ -258,6 +258,11 @@ var Map = function (_React$Component) {
 
 			console.log('render firing from maps');
 			console.log('this.state.points', this.state.points);
+			var pathPointData = this.state.points;
+			var pathCoordinates = [];
+			pathPointData.forEach(function (obj) {
+				pathCoordinates.push({ lat: obj.lat, lng: obj.long });
+			});
 			return _react2.default.createElement(_reactGoogleMaps.GoogleMapLoader, {
 				containerElement: _react2.default.createElement('div', _extends({}, this.props, {
 					style: {
@@ -265,13 +270,23 @@ var Map = function (_React$Component) {
 						width: '100vw'
 					}
 				})),
-				googleMapElement: _react2.default.createElement(_reactGoogleMaps.GoogleMap, {
-					ref: function ref(map) {
-						return _this2._googleMapComponent = map;
+				googleMapElement: _react2.default.createElement(
+					_reactGoogleMaps.GoogleMap,
+					{
+						ref: function ref(map) {
+							return _this2._googleMapComponent = map;
+						},
+						defaultZoom: 5,
+						defaultCenter: { lat: 39.8275062, lng: -98.5810004 }
 					},
-					defaultZoom: 5,
-					defaultCenter: { lat: 39.8275062, lng: -98.5810004 }
-				})
+					_react2.default.createElement(_reactGoogleMaps.Polyline, {
+						path: pathCoordinates,
+						geodesic: true,
+						strokeColor: '#FFFFFF',
+						strokeOpacity: 1.0,
+						strokeWeight: 2
+					})
+				)
 			});
 		}
 	}]);
