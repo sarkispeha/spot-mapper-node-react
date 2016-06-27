@@ -5,6 +5,7 @@ class MapStore {
   constructor() {
     this.bindActions(MapActions);
     this.points = [];
+    this.positionUpdate = {};
   }
 
   onGetPointsSuccess(data){
@@ -14,6 +15,10 @@ class MapStore {
 
   onGetPointsFail(errorMessage){
   	console.warning(errorMessage)
+  }
+
+  onPositionUpdate(data){
+  	this.positionUpdate = data.positionUpdate;
   }
 
 }

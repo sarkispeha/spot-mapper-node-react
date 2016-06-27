@@ -23,7 +23,7 @@ var MapActions = function () {
 	function MapActions() {
 		_classCallCheck(this, MapActions);
 
-		this.generateActions('getPointsSuccess', 'getPointsFail');
+		this.generateActions('getPointsSuccess', 'getPointsFail', 'positionUpdate');
 	}
 
 	_createClass(MapActions, [{
@@ -244,6 +244,12 @@ var Map = function (_React$Component) {
 			console.log('componentDidMount from maps is firing');
 			_MapStore2.default.listen(this.onChange);
 			_MapActions2.default.getPoints();
+
+			var socket = io.connect();
+			socket.on('positionUpdate', function (data) {
+				console.log('SOCKET UPDATE', data);
+				_MapActions2.default.positionUpdate(data);
+			});
 		}
 	}, {
 		key: 'onChange',
@@ -390,6 +396,7 @@ var MapStore = function () {
 
     this.bindActions(_MapActions2.default);
     this.points = [];
+    this.positionUpdate = {};
   }
 
   _createClass(MapStore, [{
@@ -402,6 +409,11 @@ var MapStore = function () {
     key: 'onGetPointsFail',
     value: function onGetPointsFail(errorMessage) {
       console.warning(errorMessage);
+    }
+  }, {
+    key: 'onPositionUpdate',
+    value: function onPositionUpdate(data) {
+      this.positionUpdate = data.positionUpdate;
     }
   }]);
 

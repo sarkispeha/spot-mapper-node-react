@@ -5,7 +5,8 @@ class MapActions {
 	constructor(){
 		this.generateActions(
 			'getPointsSuccess',
-			'getPointsFail'
+			'getPointsFail',
+			'positionUpdate'
 		);
 	}
 

@@ -17,19 +17,38 @@ var getPoints = () => {
 		var created_at = parsedBody.response.feedMessageResponse.messages.message.dateTime.split('').splice(0,19).join('');
 		console.log('FROM WORKER: POINT ID', messageId);
 		console.log('lat: ', latitude, 'long :', longitude, 'created_at :', created_at)
-		//find one and update the previous point if not new
+		Point.find({message_id: messageId}
+			, function(err, results){
+				console.log('the results of the find', results)
+				if(results.length == 0 || results[0].message_id !== messageId){
+					// console.log(results[0].message_id, messageId)
+					//request an API route that will hit the socket.io
+					let postOptions = {
+						url: 'http://localhost:8000/api/updatePoint',
+						form:{
+							message_id: messageId,
+							long: longitude,
+							lat: latitude,
+							created_at : created_at
+						}
+					}
+					console.log('THE ID IS NOT THE SAME!!!')
+					request.post(postOptions, function(error, response, body){
+						console.log('error from request post', error)
+						console.log('body from request post', body)
+					});
+				}else{
+					console.log('SAME ID', results[0].message_id, messageId)
+				}
+			}
+		)
+		// find one and update the previous point if not new
 		Point.findOneAndUpdate(
 			{message_id: messageId},
 			{message_id: messageId, long: longitude, lat: latitude, created_at : created_at},
 			{upsert: true, new: true}
 		).exec()
 	})
-		// var newPoint = new Point();
-		// newPoint.lat = latitude;
-		// newPoint.long = longitude;
-		// newPoint.save(function(err, result){
-		// 	console.log('this is the save to db err: ', err);
-		// })
 }
 
 setInterval(function() {

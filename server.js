@@ -38,13 +38,29 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
 
-
+/**
+ * Socket.io stuff.
+ */
+var server = require('http').createServer(app);
+var io = require('socket.io')(server);
 /*
 EXPRESS ROUTES
 */
 // app.get('/api/getPoints', API.allPoints);
 app.get('/api/getPoints', function(req, res, next){
 		console.log('allpoints API called')
+		//TODO: CHANGE THIS TO A FIND ON THE DB FOR THIS APP
+		/*
+		allPoints: function(req, res){
+			console.log('getting points');
+			Point.find({}, (err, results)=>{
+				console.log('point find err ', err);
+				res.render('index', 
+				{data : results}
+				);
+			})
+		}
+		*/
 		request.get('https://where-is-sark.herokuapp.com/api/getAllPoints', function(err, request, response){
 			if(err){
 				console.log('this is the err', err)
@@ -55,15 +71,23 @@ app.get('/api/getPoints', function(req, res, next){
 		})
 	}
 )
+
+app.post('/api/updatePoint', function(req, res){
+	var positionUpdate = {};
+	io.sockets.emit('positionUpdate', { positionUpdate: positionUpdate });
+	console.log('/api/updatePoint has been HIT!!!000000', req.body)
+	res.sendStatus(200)
+})
+
 /*
 REACT ROUTER
 */
 app.use(function(req, res) {
 	console.log(req.url)
   Router.match({ routes: routes.default, location: req.url }, function(err, redirectLocation, renderProps) {
-  	console.log('err ',err)
-  	console.log('redirectLocation', redirectLocation)
-  	console.log('renderProps ',renderProps)
+  	// console.log('err ',err)
+  	// console.log('redirectLocation', redirectLocation)
+  	// console.log('renderProps ',renderProps)
     if (err) {
       res.status(500).send(err.message)
     } else if (redirectLocation) {
@@ -78,7 +102,20 @@ app.use(function(req, res) {
   });
 });
 
-var server = require('http').createServer(app);
+
+// var io = require('socket.io')(server);
+// var positionUpdate = {};
+
+// io.sockets.on('connection', function(socket) {
+// 	console.log('socket is connected')
+//   io.sockets.emit('positionUpdate', { positionUpdate: positionUpdate });
+
+//   socket.on('disconnect', function() {
+//     onlineUsers--;
+//     io.sockets.emit('onlineUsers', { onlineUsers: onlineUsers });
+//   });
+// });
+
 server.listen(app.get('port'), function() {
 	console.log('Express server listening on port ' + app.get('port'));
 });

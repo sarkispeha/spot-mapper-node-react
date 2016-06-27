@@ -18,6 +18,12 @@ class Map extends React.Component {
   		console.log('componentDidMount from maps is firing')
     	MapStore.listen(this.onChange);
     	MapActions.getPoints();
+
+    	let socket = io.connect();
+    	socket.on('positionUpdate', (data) => {
+    		console.log('SOCKET UPDATE', data)
+	    	MapActions.positionUpdate(data);
+	    });
   	}
 
   	onChange(state) {
