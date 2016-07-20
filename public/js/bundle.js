@@ -35,7 +35,7 @@ var MapActions = function () {
 				method: 'GET',
 				url: '/api/getPoints',
 				unwrapSuccess: function unwrapSuccess(response) {
-					console.log('response from mithril request ', response);
+					// console.log('response from mithril request ', response)
 					successAction(response);
 				},
 				unwrapError: function unwrapError(response) {
@@ -51,7 +51,7 @@ var MapActions = function () {
 
 exports.default = _alt2.default.createActions(MapActions);
 
-},{"../alt":2,"mithril":28}],2:[function(require,module,exports){
+},{"../alt":2,"mithril":29}],2:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -302,7 +302,190 @@ var Map = function (_React$Component) {
 
 exports.default = Map;
 
-},{"../actions/MapActions":1,"../stores/MapStore":8,"lodash":27,"react":"react","react-google-maps":66,"react-router":"react-router"}],6:[function(require,module,exports){
+},{"../actions/MapActions":1,"../stores/MapStore":9,"lodash":28,"react":"react","react-google-maps":67,"react-router":"react-router"}],6:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _react = require('react');
+
+var _react2 = _interopRequireDefault(_react);
+
+var _reactRouter = require('react-router');
+
+var _MapStore = require('../stores/MapStore');
+
+var _MapStore2 = _interopRequireDefault(_MapStore);
+
+var _MapActions = require('../actions/MapActions');
+
+var _MapActions2 = _interopRequireDefault(_MapActions);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var TestMap = function (_React$Component) {
+	_inherits(TestMap, _React$Component);
+
+	function TestMap(props) {
+		_classCallCheck(this, TestMap);
+
+		console.log('constructor is firing from testmaps');
+
+		var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(TestMap).call(this, props));
+
+		_this.state = _MapStore2.default.getState();
+		console.log('this is thes state:', _this.state);
+		_this.onChange = _this.onChange.bind(_this);
+		return _this;
+	}
+	// static propTypes() {
+	//  		initialCenter: React.PropTypes.objectOf(React.PropTypes.number).isRequired
+	// }
+
+	_createClass(TestMap, [{
+		key: 'render',
+		value: function render() {
+			return _react2.default.createElement(
+				'div',
+				{ className: 'GMap' },
+				_react2.default.createElement(
+					'div',
+					{ className: 'UpdatedText' },
+					'// ',
+					_react2.default.createElement(
+						'p',
+						null,
+						'Current Zoom: 10'
+					)
+				),
+				_react2.default.createElement('div', { className: 'GMap-canvas', ref: 'mapCanvas' })
+			);
+		}
+	}, {
+		key: 'componentDidMount',
+		value: function componentDidMount() {
+			console.log('componentDidMount from maps is firing');
+			_MapStore2.default.listen(this.onChange);
+			_MapActions2.default.getPoints();
+
+			var socket = io.connect();
+			socket.on('positionUpdate', function (data) {
+				console.log('SOCKET UPDATE', data);
+				_MapActions2.default.positionUpdate(data);
+			});
+		}
+	}, {
+		key: 'onChange',
+		value: function onChange(state) {
+			this.setState(state);
+			var pathPointData = this.state.points;
+			this.map = this.createMap(pathPointData);
+			this.path = this.createPath(pathPointData);
+			this.marker = this.createMarker(pathPointData);
+			console.log('onChange from maps is firing', state);
+		}
+
+		/*componentDidMount() {
+  // create the map, marker and infoWindow after the component has
+  // been rendered because we need to manipulate the DOM for Google =(
+  this.map = this.createMap()
+  // this.marker = this.createMarker()
+  // this.infoWindow = this.createInfoWindow()
+  
+  // have to define google maps event listeners here too
+  // because we can't add listeners on the map until its created
+  // google.maps.event.addListener(this.map, 'zoom_changed', ()=> this.handleZoomChange())
+  }*/
+
+		// clean up event listeners when component unmounts
+		// componentDidUnMount() {
+		//   google.maps.event.clearListeners(map, 'zoom_changed')
+		// }
+
+	}, {
+		key: 'createMap',
+		value: function createMap(pathPointData) {
+			var mapOptions = {
+				zoom: 10,
+				center: this.mapCenter(pathPointData),
+				mapTypeId: google.maps.MapTypeId.HYBRID
+			};
+			return new google.maps.Map(this.refs.mapCanvas, mapOptions);
+		}
+	}, {
+		key: 'createPath',
+		value: function createPath(pathPointData) {
+			var pathCoordinates = [];
+			pathPointData.forEach(function (obj) {
+				pathCoordinates.push({ lat: obj.lat, lng: obj.long });
+			});
+			console.log('pathCoordinates', pathCoordinates);
+			return new google.maps.Polyline({
+				map: this.map,
+				path: pathCoordinates,
+				geodesic: true,
+				strokeColor: '#FF0000',
+				strokeOpacity: 1.0,
+				strokeWeight: 2
+			});
+		}
+	}, {
+		key: 'mapCenter',
+		value: function mapCenter(pathPointData) {
+			// console.log('pathPointData from mapcenter', pathPointData)
+			if (pathPointData != undefined) {
+				var lastPoint = pathPointData[pathPointData.length - 1];
+				console.log('last Point', lastPoint);
+				var lastCoordinate = { lat: lastPoint.lat, lng: lastPoint.long, message_id: lastPoint.message_id };
+				return new google.maps.LatLng({
+					lat: lastPoint.lat,
+					lng: lastPoint.long
+				});
+			}
+		}
+	}, {
+		key: 'createMarker',
+		value: function createMarker(pathPointData) {
+			return new google.maps.Marker({
+				position: this.mapCenter(pathPointData),
+				map: this.map
+			});
+		}
+	}, {
+		key: 'createInfoWindow',
+		value: function createInfoWindow() {
+			var contentString = "<div class='InfoWindow'>I'm a Window that contains Info Yay</div>";
+			return new google.maps.InfoWindow({
+				map: this.map,
+				anchor: this.marker,
+				content: contentString
+			});
+		}
+	}, {
+		key: 'handleZoomChange',
+		value: function handleZoomChange() {
+			this.setState({
+				zoom: this.map.getZoom()
+			});
+		}
+	}]);
+
+	return TestMap;
+}(_react2.default.Component);
+
+exports.default = TestMap;
+
+},{"../actions/MapActions":1,"../stores/MapStore":9,"react":"react","react-router":"react-router"}],7:[function(require,module,exports){
 'use strict';
 
 var _react = require('react');
@@ -335,7 +518,7 @@ _reactDom2.default.render(_react2.default.createElement(
   _routes2.default
 ), document.getElementById('app'));
 
-},{"./routes":7,"history/lib/createBrowserHistory":18,"react":"react","react-dom":"react-dom","react-router":"react-router"}],7:[function(require,module,exports){
+},{"./routes":8,"history/lib/createBrowserHistory":19,"react":"react","react-dom":"react-dom","react-router":"react-router"}],8:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -360,16 +543,21 @@ var _Map = require('./components/Map');
 
 var _Map2 = _interopRequireDefault(_Map);
 
+var _TestMap = require('./components/TestMap');
+
+var _TestMap2 = _interopRequireDefault(_TestMap);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 exports.default = _react2.default.createElement(
 	_reactRouter.Route,
 	{ component: _App2.default },
 	_react2.default.createElement(_reactRouter.Route, { path: '/', component: _Home2.default }),
-	_react2.default.createElement(_reactRouter.Route, { path: '/map', component: _Map2.default })
+	_react2.default.createElement(_reactRouter.Route, { path: '/map', component: _Map2.default }),
+	_react2.default.createElement(_reactRouter.Route, { path: '/testmap', component: _TestMap2.default })
 );
 
-},{"./components/App":3,"./components/Home":4,"./components/Map":5,"react":"react","react-router":"react-router"}],8:[function(require,module,exports){
+},{"./components/App":3,"./components/Home":4,"./components/Map":5,"./components/TestMap":6,"react":"react","react-router":"react-router"}],9:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -403,7 +591,7 @@ var MapStore = function () {
     key: 'onGetPointsSuccess',
     value: function onGetPointsSuccess(data) {
       this.points = data;
-      console.log('this is this.points ', this.points);
+      // console.log('this is this.points ', this.points)
     }
   }, {
     key: 'onGetPointsFail',
@@ -422,7 +610,7 @@ var MapStore = function () {
 
 exports.default = _alt2.default.createStore(MapStore);
 
-},{"../actions/MapActions":1,"../alt":2}],9:[function(require,module,exports){
+},{"../actions/MapActions":1,"../alt":2}],10:[function(require,module,exports){
 var canUseDOM = !!(
   typeof window !== 'undefined' &&
   window.document &&
@@ -430,7 +618,7 @@ var canUseDOM = !!(
 );
 
 module.exports = canUseDOM;
-},{}],10:[function(require,module,exports){
+},{}],11:[function(require,module,exports){
 var pSlice = Array.prototype.slice;
 var objectKeys = require('./lib/keys.js');
 var isArguments = require('./lib/is_arguments.js');
@@ -526,7 +714,7 @@ function objEquiv(a, b, opts) {
   return typeof a === typeof b;
 }
 
-},{"./lib/is_arguments.js":11,"./lib/keys.js":12}],11:[function(require,module,exports){
+},{"./lib/is_arguments.js":12,"./lib/keys.js":13}],12:[function(require,module,exports){
 var supportsArgumentsClass = (function(){
   return Object.prototype.toString.call(arguments)
 })() == '[object Arguments]';
@@ -548,7 +736,7 @@ function unsupported(object){
     false;
 };
 
-},{}],12:[function(require,module,exports){
+},{}],13:[function(require,module,exports){
 exports = module.exports = typeof Object.keys === 'function'
   ? Object.keys : shim;
 
@@ -559,7 +747,7 @@ function shim (obj) {
   return keys;
 }
 
-},{}],13:[function(require,module,exports){
+},{}],14:[function(require,module,exports){
 /**
  * Indicates that navigation was caused by a call to history.push.
  */
@@ -591,7 +779,7 @@ exports['default'] = {
   REPLACE: REPLACE,
   POP: POP
 };
-},{}],14:[function(require,module,exports){
+},{}],15:[function(require,module,exports){
 "use strict";
 
 exports.__esModule = true;
@@ -618,7 +806,7 @@ function loopAsync(turns, work, callback) {
 
   next();
 }
-},{}],15:[function(require,module,exports){
+},{}],16:[function(require,module,exports){
 (function (process){
 /*eslint-disable no-empty */
 'use strict';
@@ -690,7 +878,7 @@ function readState(key) {
 }
 }).call(this,require('_process'))
 
-},{"_process":29,"warning":74}],16:[function(require,module,exports){
+},{"_process":30,"warning":75}],17:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -771,13 +959,13 @@ function supportsGoWithoutReloadUsingHash() {
   var ua = navigator.userAgent;
   return ua.indexOf('Firefox') === -1;
 }
-},{}],17:[function(require,module,exports){
+},{}],18:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
 var canUseDOM = !!(typeof window !== 'undefined' && window.document && window.document.createElement);
 exports.canUseDOM = canUseDOM;
-},{}],18:[function(require,module,exports){
+},{}],19:[function(require,module,exports){
 (function (process){
 'use strict';
 
@@ -959,7 +1147,7 @@ exports['default'] = createBrowserHistory;
 module.exports = exports['default'];
 }).call(this,require('_process'))
 
-},{"./Actions":13,"./DOMStateStorage":15,"./DOMUtils":16,"./ExecutionEnvironment":17,"./createDOMHistory":19,"./parsePath":24,"_process":29,"invariant":26}],19:[function(require,module,exports){
+},{"./Actions":14,"./DOMStateStorage":16,"./DOMUtils":17,"./ExecutionEnvironment":18,"./createDOMHistory":20,"./parsePath":25,"_process":30,"invariant":27}],20:[function(require,module,exports){
 (function (process){
 'use strict';
 
@@ -1003,7 +1191,7 @@ exports['default'] = createDOMHistory;
 module.exports = exports['default'];
 }).call(this,require('_process'))
 
-},{"./DOMUtils":16,"./ExecutionEnvironment":17,"./createHistory":20,"_process":29,"invariant":26}],20:[function(require,module,exports){
+},{"./DOMUtils":17,"./ExecutionEnvironment":18,"./createHistory":21,"_process":30,"invariant":27}],21:[function(require,module,exports){
 //import warning from 'warning'
 'use strict';
 
@@ -1295,7 +1483,7 @@ function createHistory() {
 
 exports['default'] = createHistory;
 module.exports = exports['default'];
-},{"./Actions":13,"./AsyncUtils":14,"./createLocation":21,"./deprecate":22,"./parsePath":24,"./runTransitionHook":25,"deep-equal":10}],21:[function(require,module,exports){
+},{"./Actions":14,"./AsyncUtils":15,"./createLocation":22,"./deprecate":23,"./parsePath":25,"./runTransitionHook":26,"deep-equal":11}],22:[function(require,module,exports){
 //import warning from 'warning'
 'use strict';
 
@@ -1350,7 +1538,7 @@ function createLocation() {
 
 exports['default'] = createLocation;
 module.exports = exports['default'];
-},{"./Actions":13,"./parsePath":24}],22:[function(require,module,exports){
+},{"./Actions":14,"./parsePath":25}],23:[function(require,module,exports){
 //import warning from 'warning'
 
 "use strict";
@@ -1366,7 +1554,7 @@ function deprecate(fn) {
 
 exports["default"] = deprecate;
 module.exports = exports["default"];
-},{}],23:[function(require,module,exports){
+},{}],24:[function(require,module,exports){
 "use strict";
 
 exports.__esModule = true;
@@ -1380,7 +1568,7 @@ function extractPath(string) {
 
 exports["default"] = extractPath;
 module.exports = exports["default"];
-},{}],24:[function(require,module,exports){
+},{}],25:[function(require,module,exports){
 (function (process){
 'use strict';
 
@@ -1428,7 +1616,7 @@ exports['default'] = parsePath;
 module.exports = exports['default'];
 }).call(this,require('_process'))
 
-},{"./extractPath":23,"_process":29,"warning":74}],25:[function(require,module,exports){
+},{"./extractPath":24,"_process":30,"warning":75}],26:[function(require,module,exports){
 (function (process){
 'use strict';
 
@@ -1456,7 +1644,7 @@ exports['default'] = runTransitionHook;
 module.exports = exports['default'];
 }).call(this,require('_process'))
 
-},{"_process":29,"warning":74}],26:[function(require,module,exports){
+},{"_process":30,"warning":75}],27:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-2015, Facebook, Inc.
@@ -1512,7 +1700,7 @@ module.exports = invariant;
 
 }).call(this,require('_process'))
 
-},{"_process":29}],27:[function(require,module,exports){
+},{"_process":30}],28:[function(require,module,exports){
 (function (global){
 /**
  * @license
@@ -17921,7 +18109,7 @@ module.exports = invariant;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{}],28:[function(require,module,exports){
+},{}],29:[function(require,module,exports){
 ;(function (global, factory) { // eslint-disable-line
 	"use strict"
 	/* eslint-disable no-undef */
@@ -20156,7 +20344,7 @@ module.exports = invariant;
 	return m
 }); // eslint-disable-line
 
-},{}],29:[function(require,module,exports){
+},{}],30:[function(require,module,exports){
 // shim for using process in browser
 
 var process = module.exports = {};
@@ -20277,7 +20465,7 @@ process.chdir = function (dir) {
 };
 process.umask = function() { return 0; };
 
-},{}],30:[function(require,module,exports){
+},{}],31:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -20405,7 +20593,7 @@ module.exports = exports["default"];
 // Controlled [props] - used in componentDidMount/componentDidUpdate
 
 // Event [onEventName]
-},{"./creators/CircleCreator":43,"can-use-dom":9,"react":"react"}],31:[function(require,module,exports){
+},{"./creators/CircleCreator":44,"can-use-dom":10,"react":"react"}],32:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -20518,7 +20706,7 @@ module.exports = exports["default"];
 // Controlled [props] - used in componentDidMount/componentDidUpdate
 
 // Event [onEventName]
-},{"./creators/DirectionsRendererCreator":44,"can-use-dom":9,"react":"react"}],32:[function(require,module,exports){
+},{"./creators/DirectionsRendererCreator":45,"can-use-dom":10,"react":"react"}],33:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -20621,7 +20809,7 @@ module.exports = exports["default"];
 // Controlled [props] - used in componentDidMount/componentDidUpdate
 
 // Event [onEventName]
-},{"./creators/DrawingManagerCreator":45,"can-use-dom":9,"react":"react"}],33:[function(require,module,exports){
+},{"./creators/DrawingManagerCreator":46,"can-use-dom":10,"react":"react"}],34:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -20819,7 +21007,7 @@ module.exports = exports["default"];
 // Controlled [props] - used in componentDidMount/componentDidUpdate
 
 // Event [onEventName]
-},{"./GoogleMapLoader":34,"./creators/GoogleMapHolder":46,"react":"react","warning":74}],34:[function(require,module,exports){
+},{"./GoogleMapLoader":35,"./creators/GoogleMapHolder":47,"react":"react","warning":75}],35:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -20927,7 +21115,7 @@ var GoogleMapLoader = (function (_Component) {
 
 exports["default"] = GoogleMapLoader;
 module.exports = exports["default"];
-},{"./creators/GoogleMapHolder":46,"react":"react"}],35:[function(require,module,exports){
+},{"./creators/GoogleMapHolder":47,"react":"react"}],36:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -21033,7 +21221,7 @@ module.exports = exports["default"];
 // Controlled [props] - used in componentDidMount/componentDidUpdate
 
 // Event [onEventName]
-},{"./creators/InfoWindowCreator":47,"can-use-dom":9,"react":"react"}],36:[function(require,module,exports){
+},{"./creators/InfoWindowCreator":48,"can-use-dom":10,"react":"react"}],37:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -21151,7 +21339,7 @@ module.exports = exports["default"];
 // Controlled [props] - used in componentDidMount/componentDidUpdate
 
 // Event [onEventName]
-},{"./creators/KmlLayerCreator":48,"can-use-dom":9,"react":"react"}],37:[function(require,module,exports){
+},{"./creators/KmlLayerCreator":49,"can-use-dom":10,"react":"react"}],38:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -21330,7 +21518,7 @@ module.exports = exports["default"];
 // Controlled [props] - used in componentDidMount/componentDidUpdate
 
 // Event [onEventName]
-},{"./creators/MarkerCreator":49,"can-use-dom":9,"react":"react"}],38:[function(require,module,exports){
+},{"./creators/MarkerCreator":50,"can-use-dom":10,"react":"react"}],39:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -21462,7 +21650,7 @@ module.exports = exports["default"];
 // Uncontrolled default[props] - used only in componentDidMount
 
 // Controlled [props] - used in componentDidMount/componentDidUpdate
-},{"./creators/OverlayViewCreator":50,"can-use-dom":9,"react":"react"}],39:[function(require,module,exports){
+},{"./creators/OverlayViewCreator":51,"can-use-dom":10,"react":"react"}],40:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -21580,7 +21768,7 @@ module.exports = exports["default"];
 // Controlled [props] - used in componentDidMount/componentDidUpdate
 
 // Event [onEventName]
-},{"./creators/PolygonCreator":51,"can-use-dom":9,"react":"react"}],40:[function(require,module,exports){
+},{"./creators/PolygonCreator":52,"can-use-dom":10,"react":"react"}],41:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -21693,7 +21881,7 @@ module.exports = exports["default"];
 // Controlled [props] - used in componentDidMount/componentDidUpdate
 
 // Event [onEventName]
-},{"./creators/PolylineCreator":52,"can-use-dom":9,"react":"react"}],41:[function(require,module,exports){
+},{"./creators/PolylineCreator":53,"can-use-dom":10,"react":"react"}],42:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -21811,7 +21999,7 @@ module.exports = exports["default"];
 // Controlled [props] - used in componentDidMount/componentDidUpdate
 
 // Event [onEventName]
-},{"./creators/RectangleCreator":53,"can-use-dom":9,"react":"react"}],42:[function(require,module,exports){
+},{"./creators/RectangleCreator":54,"can-use-dom":10,"react":"react"}],43:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -21945,7 +22133,7 @@ module.exports = exports["default"];
 // Controlled [props] - used in componentDidMount/componentDidUpdate
 
 // Event [onEventName]
-},{"./creators/SearchBoxCreator":54,"can-use-dom":9,"react":"react"}],43:[function(require,module,exports){
+},{"./creators/SearchBoxCreator":55,"can-use-dom":10,"react":"react"}],44:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -22089,7 +22277,7 @@ var CircleCreator = (function (_Component) {
 })(_react.Component);
 
 exports["default"] = CircleCreator;
-},{"../eventLists/CircleEventList":55,"../utils/componentLifecycleDecorator":68,"../utils/composeOptions":69,"../utils/defaultPropsCreator":71,"../utils/eventHandlerCreator":72,"./GoogleMapHolder":46,"react":"react"}],44:[function(require,module,exports){
+},{"../eventLists/CircleEventList":56,"../utils/componentLifecycleDecorator":69,"../utils/composeOptions":70,"../utils/defaultPropsCreator":72,"../utils/eventHandlerCreator":73,"./GoogleMapHolder":47,"react":"react"}],45:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -22236,7 +22424,7 @@ var DirectionsRendererCreator = (function (_Component) {
 })(_react.Component);
 
 exports["default"] = DirectionsRendererCreator;
-},{"../eventLists/DirectionsRendererEventList":56,"../utils/componentLifecycleDecorator":68,"../utils/composeOptions":69,"../utils/defaultPropsCreator":71,"../utils/eventHandlerCreator":72,"./GoogleMapHolder":46,"react":"react"}],45:[function(require,module,exports){
+},{"../eventLists/DirectionsRendererEventList":57,"../utils/componentLifecycleDecorator":69,"../utils/composeOptions":70,"../utils/defaultPropsCreator":72,"../utils/eventHandlerCreator":73,"./GoogleMapHolder":47,"react":"react"}],46:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -22364,7 +22552,7 @@ var DrawingManagerCreator = (function (_Component) {
 })(_react.Component);
 
 exports["default"] = DrawingManagerCreator;
-},{"../eventLists/DrawingManagerEventList":57,"../utils/componentLifecycleDecorator":68,"../utils/composeOptions":69,"../utils/defaultPropsCreator":71,"../utils/eventHandlerCreator":72,"./GoogleMapHolder":46,"react":"react"}],46:[function(require,module,exports){
+},{"../eventLists/DrawingManagerEventList":58,"../utils/componentLifecycleDecorator":69,"../utils/composeOptions":70,"../utils/defaultPropsCreator":72,"../utils/eventHandlerCreator":73,"./GoogleMapHolder":47,"react":"react"}],47:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -22520,7 +22708,7 @@ var GoogleMapHolder = (function (_Component) {
 })(_react.Component);
 
 exports["default"] = GoogleMapHolder;
-},{"../eventLists/GoogleMapEventList":58,"../utils/componentLifecycleDecorator":68,"../utils/composeOptions":69,"../utils/defaultPropsCreator":71,"../utils/eventHandlerCreator":72,"react":"react","warning":74}],47:[function(require,module,exports){
+},{"../eventLists/GoogleMapEventList":59,"../utils/componentLifecycleDecorator":69,"../utils/composeOptions":70,"../utils/defaultPropsCreator":72,"../utils/eventHandlerCreator":73,"react":"react","warning":75}],48:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -22673,7 +22861,7 @@ var InfoWindowCreator = (function (_Component) {
 })(_react.Component);
 
 exports["default"] = InfoWindowCreator;
-},{"../eventLists/InfoWindowEventList":59,"../utils/componentLifecycleDecorator":68,"../utils/composeOptions":69,"../utils/defaultPropsCreator":71,"../utils/eventHandlerCreator":72,"../utils/setContentForOptionalReactElement":73,"./GoogleMapHolder":46,"react":"react"}],48:[function(require,module,exports){
+},{"../eventLists/InfoWindowEventList":60,"../utils/componentLifecycleDecorator":69,"../utils/composeOptions":70,"../utils/defaultPropsCreator":72,"../utils/eventHandlerCreator":73,"../utils/setContentForOptionalReactElement":74,"./GoogleMapHolder":47,"react":"react"}],49:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -22829,7 +23017,7 @@ var KmlLayerCreator = (function (_Component) {
 })(_react.Component);
 
 exports["default"] = KmlLayerCreator;
-},{"../eventLists/KmlLayerEventList":60,"../utils/componentLifecycleDecorator":68,"../utils/composeOptions":69,"../utils/defaultPropsCreator":71,"../utils/eventHandlerCreator":72,"./GoogleMapHolder":46,"react":"react"}],49:[function(require,module,exports){
+},{"../eventLists/KmlLayerEventList":61,"../utils/componentLifecycleDecorator":69,"../utils/composeOptions":70,"../utils/defaultPropsCreator":72,"../utils/eventHandlerCreator":73,"./GoogleMapHolder":47,"react":"react"}],50:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -23043,7 +23231,7 @@ var MarkerCreator = (function (_Component) {
 })(_react.Component);
 
 exports["default"] = MarkerCreator;
-},{"../eventLists/MarkerEventList":61,"../utils/componentLifecycleDecorator":68,"../utils/composeOptions":69,"../utils/defaultPropsCreator":71,"../utils/eventHandlerCreator":72,"./GoogleMapHolder":46,"react":"react"}],50:[function(require,module,exports){
+},{"../eventLists/MarkerEventList":62,"../utils/componentLifecycleDecorator":69,"../utils/composeOptions":70,"../utils/defaultPropsCreator":72,"../utils/eventHandlerCreator":73,"./GoogleMapHolder":47,"react":"react"}],51:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -23291,7 +23479,7 @@ var OverlayViewCreator = (function (_Component) {
 })(_react.Component);
 
 exports["default"] = OverlayViewCreator;
-},{"../utils/composeOptions":69,"../utils/defaultPropsCreator":71,"./GoogleMapHolder":46,"invariant":26,"react":"react","react-dom":"react-dom"}],51:[function(require,module,exports){
+},{"../utils/composeOptions":70,"../utils/defaultPropsCreator":72,"./GoogleMapHolder":47,"invariant":27,"react":"react","react-dom":"react-dom"}],52:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -23435,7 +23623,7 @@ var PolygonCreator = (function (_Component) {
 })(_react.Component);
 
 exports["default"] = PolygonCreator;
-},{"../eventLists/PolygonEventList":62,"../utils/componentLifecycleDecorator":68,"../utils/composeOptions":69,"../utils/defaultPropsCreator":71,"../utils/eventHandlerCreator":72,"./GoogleMapHolder":46,"react":"react"}],52:[function(require,module,exports){
+},{"../eventLists/PolygonEventList":63,"../utils/componentLifecycleDecorator":69,"../utils/composeOptions":70,"../utils/defaultPropsCreator":72,"../utils/eventHandlerCreator":73,"./GoogleMapHolder":47,"react":"react"}],53:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -23575,7 +23763,7 @@ var PolylineCreator = (function (_Component) {
 })(_react.Component);
 
 exports["default"] = PolylineCreator;
-},{"../eventLists/PolylineEventList":63,"../utils/componentLifecycleDecorator":68,"../utils/composeOptions":69,"../utils/defaultPropsCreator":71,"../utils/eventHandlerCreator":72,"./GoogleMapHolder":46,"react":"react"}],53:[function(require,module,exports){
+},{"../eventLists/PolylineEventList":64,"../utils/componentLifecycleDecorator":69,"../utils/composeOptions":70,"../utils/defaultPropsCreator":72,"../utils/eventHandlerCreator":73,"./GoogleMapHolder":47,"react":"react"}],54:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -23715,7 +23903,7 @@ var RectangleCreator = (function (_Component) {
 })(_react.Component);
 
 exports["default"] = RectangleCreator;
-},{"../eventLists/RectangleEventList":64,"../utils/componentLifecycleDecorator":68,"../utils/composeOptions":69,"../utils/defaultPropsCreator":71,"../utils/eventHandlerCreator":72,"./GoogleMapHolder":46,"react":"react"}],54:[function(require,module,exports){
+},{"../eventLists/RectangleEventList":65,"../utils/componentLifecycleDecorator":69,"../utils/composeOptions":70,"../utils/defaultPropsCreator":72,"../utils/eventHandlerCreator":73,"./GoogleMapHolder":47,"react":"react"}],55:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -23868,7 +24056,7 @@ var SearchBoxCreator = (function (_Component) {
 })(_react.Component);
 
 exports["default"] = SearchBoxCreator;
-},{"../eventLists/SearchBoxEventList":65,"../utils/componentLifecycleDecorator":68,"../utils/composeOptions":69,"../utils/defaultPropsCreator":71,"../utils/eventHandlerCreator":72,"./GoogleMapHolder":46,"react":"react"}],55:[function(require,module,exports){
+},{"../eventLists/SearchBoxEventList":66,"../utils/componentLifecycleDecorator":69,"../utils/composeOptions":70,"../utils/defaultPropsCreator":72,"../utils/eventHandlerCreator":73,"./GoogleMapHolder":47,"react":"react"}],56:[function(require,module,exports){
 // https://developers.google.com/maps/documentation/javascript/3.exp/reference#Circle
 // [].map.call($0.querySelectorAll("tr>td>code"), function(it){ return it.textContent; })
 "use strict";
@@ -23878,7 +24066,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports["default"] = ["center_changed", "click", "dblclick", "drag", "dragend", "dragstart", "mousedown", "mousemove", "mouseout", "mouseover", "mouseup", "radius_changed", "rightclick"];
 module.exports = exports["default"];
-},{}],56:[function(require,module,exports){
+},{}],57:[function(require,module,exports){
 // https://developers.google.com/maps/documentation/javascript/3.exp/reference#DirectionsRenderer
 // [].map.call($0.querySelectorAll("tr>td>code"), function(it){ return it.textContent; })
 "use strict";
@@ -23888,7 +24076,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports["default"] = ["directions_changed"];
 module.exports = exports["default"];
-},{}],57:[function(require,module,exports){
+},{}],58:[function(require,module,exports){
 // https://developers.google.com/maps/documentation/javascript/3.exp/reference#DrawingManager
 // [].map.call($0.querySelectorAll("tr>td>code"), function(it){ return it.textContent; })
 "use strict";
@@ -23898,7 +24086,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports["default"] = ["circlecomplete", "markercomplete", "overlaycomplete", "polygoncomplete", "polylinecomplete", "rectanglecomplete"];
 module.exports = exports["default"];
-},{}],58:[function(require,module,exports){
+},{}],59:[function(require,module,exports){
 // https://developers.google.com/maps/documentation/javascript/3.exp/reference#Map
 // [].map.call($0.querySelectorAll("tr>td>code"), function(it){ return it.textContent; })
 "use strict";
@@ -23908,7 +24096,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports["default"] = ["bounds_changed", "center_changed", "click", "dblclick", "drag", "dragend", "dragstart", "heading_changed", "idle", "maptypeid_changed", "mousemove", "mouseout", "mouseover", "projection_changed", "resize", "rightclick", "tilesloaded", "tilt_changed", "zoom_changed"];
 module.exports = exports["default"];
-},{}],59:[function(require,module,exports){
+},{}],60:[function(require,module,exports){
 // https://developers.google.com/maps/documentation/javascript/3.exp/reference#InfoWindow
 // [].map.call($0.querySelectorAll("tr>td>code"), function(it){ return it.textContent; })
 "use strict";
@@ -23918,7 +24106,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports["default"] = ["closeclick", "content_changed", "domready", "position_changed", "zindex_changed"];
 module.exports = exports["default"];
-},{}],60:[function(require,module,exports){
+},{}],61:[function(require,module,exports){
 // https://developers.google.com/maps/documentation/javascript/3.exp/reference#KmlLayer
 // [].map.call($0.querySelectorAll("tr>td>code"), function(it){ return it.textContent; })
 "use strict";
@@ -23928,7 +24116,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports["default"] = ["click", "defaultviewport_changed", "status_changed"];
 module.exports = exports["default"];
-},{}],61:[function(require,module,exports){
+},{}],62:[function(require,module,exports){
 // https://developers.google.com/maps/documentation/javascript/3.exp/reference#Marker
 // [].map.call($0.querySelectorAll("tr>td>code"), function(it){ return it.textContent; })
 "use strict";
@@ -23938,7 +24126,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports["default"] = ["animation_changed", "click", "clickable_changed", "cursor_changed", "dblclick", "drag", "dragend", "draggable_changed", "dragstart", "flat_changed", "icon_changed", "mousedown", "mouseout", "mouseover", "mouseup", "position_changed", "rightclick", "shape_changed", "title_changed", "visible_changed", "zindex_changed"];
 module.exports = exports["default"];
-},{}],62:[function(require,module,exports){
+},{}],63:[function(require,module,exports){
 // https://developers.google.com/maps/documentation/javascript/3.exp/reference#Polygon
 // [].map.call($0.querySelectorAll("tr>td>code"), function(it){ return it.textContent; })
 "use strict";
@@ -23948,7 +24136,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports["default"] = ["click", "dblclick", "drag", "dragend", "dragstart", "mousedown", "mousemove", "mouseout", "mouseover", "mouseup", "rightclick"];
 module.exports = exports["default"];
-},{}],63:[function(require,module,exports){
+},{}],64:[function(require,module,exports){
 // https://developers.google.com/maps/documentation/javascript/3.exp/reference#Polyline
 // [].map.call($0.querySelectorAll("tr>td>code"), function(it){ return it.textContent; })
 "use strict";
@@ -23958,7 +24146,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports["default"] = ["click", "dblclick", "drag", "dragend", "dragstart", "mousedown", "mousemove", "mouseout", "mouseover", "mouseup", "rightclick"];
 module.exports = exports["default"];
-},{}],64:[function(require,module,exports){
+},{}],65:[function(require,module,exports){
 // https://developers.google.com/maps/documentation/javascript/3.exp/reference#Rectangle
 // [].map.call($0.querySelectorAll("tr>td>code"), function(it){ return it.textContent; })
 "use strict";
@@ -23968,7 +24156,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports["default"] = ["bounds_changed", "click", "dblclick", "drag", "dragend", "dragstart", "mousedown", "mousemove", "mouseout", "mouseover", "mouseup", "rightclick"];
 module.exports = exports["default"];
-},{}],65:[function(require,module,exports){
+},{}],66:[function(require,module,exports){
 // https://developers.google.com/maps/documentation/javascript/3.exp/reference#SearchBox
 // [].map.call($0.querySelectorAll("tr>td>code"), function(it){ return it.textContent; })
 "use strict";
@@ -23978,7 +24166,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports["default"] = ["places_changed"];
 module.exports = exports["default"];
-},{}],66:[function(require,module,exports){
+},{}],67:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -24038,7 +24226,7 @@ exports.Rectangle = _interopRequire(_Rectangle);
 var _SearchBox = require("./SearchBox");
 
 exports.SearchBox = _interopRequire(_SearchBox);
-},{"./Circle":30,"./DirectionsRenderer":31,"./DrawingManager":32,"./GoogleMap":33,"./GoogleMapLoader":34,"./InfoWindow":35,"./KmlLayer":36,"./Marker":37,"./OverlayView":38,"./Polygon":39,"./Polyline":40,"./Rectangle":41,"./SearchBox":42}],67:[function(require,module,exports){
+},{"./Circle":31,"./DirectionsRenderer":32,"./DrawingManager":33,"./GoogleMap":34,"./GoogleMapLoader":35,"./InfoWindow":36,"./KmlLayer":37,"./Marker":38,"./OverlayView":39,"./Polygon":40,"./Polyline":41,"./Rectangle":42,"./SearchBox":43}],68:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -24051,7 +24239,7 @@ function addDefaultPrefix(name) {
 }
 
 module.exports = exports["default"];
-},{}],68:[function(require,module,exports){
+},{}],69:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -24137,7 +24325,7 @@ function componentLifecycleDecorator(_ref) {
 }
 
 module.exports = exports["default"];
-},{}],69:[function(require,module,exports){
+},{}],70:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -24172,7 +24360,7 @@ function composeOptions(props, controlledPropTypes) {
 }
 
 module.exports = exports["default"];
-},{"./controlledOrDefault":70}],70:[function(require,module,exports){
+},{"./controlledOrDefault":71}],71:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -24197,7 +24385,7 @@ function controlledOrDefault(props) {
 }
 
 module.exports = exports["default"];
-},{"./addDefaultPrefix":67}],71:[function(require,module,exports){
+},{"./addDefaultPrefix":68}],72:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -24219,7 +24407,7 @@ function defaultPropsCreator(propTypes) {
 }
 
 module.exports = exports["default"];
-},{"./addDefaultPrefix":67}],72:[function(require,module,exports){
+},{"./addDefaultPrefix":68}],73:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -24267,7 +24455,7 @@ function eventHandlerCreator(rawNameList) {
 }
 
 module.exports = exports["default"];
-},{"react":"react"}],73:[function(require,module,exports){
+},{"react":"react"}],74:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -24306,7 +24494,7 @@ function setContentForOptionalReactElement(contentOptionalReactElement, infoWind
 }
 
 module.exports = exports["default"];
-},{"react":"react","react-dom":"react-dom"}],74:[function(require,module,exports){
+},{"react":"react","react-dom":"react-dom"}],75:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2014-2015, Facebook, Inc.
@@ -24371,7 +24559,7 @@ module.exports = warning;
 
 }).call(this,require('_process'))
 
-},{"_process":29}]},{},[6])
+},{"_process":30}]},{},[7])
 
 
 //# sourceMappingURL=bundle.js.map

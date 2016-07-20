@@ -9,7 +9,6 @@ var swig  = require('swig');
 var React = require('react');
 var ReactDOM = require('react-dom/server');
 var Router = require('react-router');
-var routes = require('./app/routes');
 var express = require('express');
 var path = require('path');
 var logger = require('morgan');
@@ -85,9 +84,6 @@ REACT ROUTER
 app.use(function(req, res) {
 	console.log(req.url)
   Router.match({ routes: routes.default, location: req.url }, function(err, redirectLocation, renderProps) {
-  	// console.log('err ',err)
-  	// console.log('redirectLocation', redirectLocation)
-  	// console.log('renderProps ',renderProps)
     if (err) {
       res.status(500).send(err.message)
     } else if (redirectLocation) {
@@ -101,20 +97,6 @@ app.use(function(req, res) {
     }
   });
 });
-
-
-// var io = require('socket.io')(server);
-// var positionUpdate = {};
-
-// io.sockets.on('connection', function(socket) {
-// 	console.log('socket is connected')
-//   io.sockets.emit('positionUpdate', { positionUpdate: positionUpdate });
-
-//   socket.on('disconnect', function() {
-//     onlineUsers--;
-//     io.sockets.emit('onlineUsers', { onlineUsers: onlineUsers });
-//   });
-// });
 
 server.listen(app.get('port'), function() {
 	console.log('Express server listening on port ' + app.get('port'));

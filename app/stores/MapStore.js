@@ -10,7 +10,7 @@ class MapStore {
 
   onGetPointsSuccess(data){
   	this.points = data;
-  	console.log('this is this.points ', this.points)
+  	// console.log('this is this.points ', this.points)
   }
 
   onGetPointsFail(errorMessage){

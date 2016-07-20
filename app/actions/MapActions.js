@@ -17,7 +17,7 @@ class MapActions {
 			method: 'GET',
 			url : '/api/getPoints',
 			unwrapSuccess: function(response){
-				console.log('response from mithril request ', response)
+				// console.log('response from mithril request ', response)
 				successAction(response);
 			},
 			unwrapError: function(response){
