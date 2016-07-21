@@ -44,6 +44,11 @@ var MapActions = function () {
 				}
 			});
 		}
+	}, {
+		key: 'newPositionUpdate',
+		value: function newPositionUpdate(newPosition) {
+			this.actions.positionUpdate(newPosition);
+		}
 	}]);
 
 	return MapActions;
@@ -381,7 +386,7 @@ var TestMap = function (_React$Component) {
 			var socket = io.connect();
 			socket.on('positionUpdate', function (data) {
 				console.log('SOCKET UPDATE', data);
-				_MapActions2.default.positionUpdate(data);
+				_MapActions2.default.newPositionUpdate(data);
 			});
 		}
 	}, {
@@ -600,8 +605,10 @@ var MapStore = function () {
     }
   }, {
     key: 'onPositionUpdate',
-    value: function onPositionUpdate(data) {
-      this.positionUpdate = data.positionUpdate;
+    value: function onPositionUpdate(newPoint) {
+      // this.positionUpdate = data;
+      this.points.push(newPoint.positionUpdate);
+      console.log('position updating from MapStorejs', this.points);
     }
   }]);
 

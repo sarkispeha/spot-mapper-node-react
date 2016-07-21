@@ -53,6 +53,6 @@ var getPoints = () => {
 
 setInterval(function() {
 	getPoints();
-}, 180000);
+}, 10000);
 
 getPoints();

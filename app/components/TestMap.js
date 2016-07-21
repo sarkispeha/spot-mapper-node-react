@@ -34,7 +34,7 @@ class TestMap extends React.Component{
     	let socket = io.connect();
     	socket.on('positionUpdate', (data) => {
     		console.log('SOCKET UPDATE', data)
-	    	MapActions.positionUpdate(data);
+	    	MapActions.newPositionUpdate(data);
 	    });
   	}
 

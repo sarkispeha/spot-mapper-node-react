@@ -49,17 +49,12 @@ EXPRESS ROUTES
 app.get('/api/getPoints', function(req, res, next){
 		console.log('allpoints API called')
 		//TODO: CHANGE THIS TO A FIND ON THE DB FOR THIS APP
-		/*
-		allPoints: function(req, res){
+		Point.find({}, (err, results)=>{
 			console.log('getting points');
-			Point.find({}, (err, results)=>{
-				console.log('point find err ', err);
-				res.render('index', 
-				{data : results}
-				);
-			})
-		}
-		*/
+			console.log('point find err ', err);
+			res.send(results);
+		})
+		/*		
 		request.get('https://where-is-sark.herokuapp.com/api/getAllPoints', function(err, request, response){
 			if(err){
 				console.log('this is the err', err)
@@ -68,11 +63,12 @@ app.get('/api/getPoints', function(req, res, next){
 				res.send(response)
 			}
 		})
+		*/
 	}
 )
 
 app.post('/api/updatePoint', function(req, res){
-	var positionUpdate = {};
+	var positionUpdate = req.body;
 	io.sockets.emit('positionUpdate', { positionUpdate: positionUpdate });
 	console.log('/api/updatePoint has been HIT!!!000000', req.body)
 	res.sendStatus(200)

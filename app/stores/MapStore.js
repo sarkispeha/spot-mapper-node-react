@@ -17,8 +17,10 @@ class MapStore {
   	console.warning(errorMessage)
   }
 
-  onPositionUpdate(data){
-  	this.positionUpdate = data.positionUpdate;
+  onPositionUpdate(newPoint){
+  	// this.positionUpdate = data;
+    this.points.push(newPoint.positionUpdate)
+    console.log('position updating from MapStorejs', this.points)
   }
 
 }

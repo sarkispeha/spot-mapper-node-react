@@ -26,6 +26,10 @@ class MapActions {
 			}
 		})
 	}
+
+	newPositionUpdate(newPosition) {
+		this.actions.positionUpdate(newPosition);
+	}
 }
 
 export default alt.createActions(MapActions);
