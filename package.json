@@ -1,10 +1,10 @@
 {
-  "name": "newedenfaces",
+  "name": "spot mapper react",
   "description": "",
   "version": "1.0.0",
   "repository": {
     "type": "git",
-    "url": "https://github.com/sarkispeha"
+    "url": "https://github.com/sarkispeha/spot-mapper-node-react"
   },
   "main": "server.js",
   "scripts": {
