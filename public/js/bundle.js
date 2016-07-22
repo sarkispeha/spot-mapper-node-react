@@ -366,11 +366,22 @@ var TestMap = function (_React$Component) {
 				_react2.default.createElement(
 					'div',
 					{ className: 'UpdatedText' },
-					'// ',
 					_react2.default.createElement(
 						'p',
 						null,
 						'Current Zoom: 10'
+					),
+					_react2.default.createElement(
+						'p',
+						null,
+						'Current Lat: ',
+						this.state.currentLat
+					),
+					_react2.default.createElement(
+						'p',
+						null,
+						'Current Long: ',
+						this.state.currentLong
 					)
 				),
 				_react2.default.createElement('div', { className: 'GMap-canvas', ref: 'mapCanvas' })
@@ -452,6 +463,12 @@ var TestMap = function (_React$Component) {
 				var lastPoint = pathPointData[pathPointData.length - 1];
 				console.log('last Point', lastPoint);
 				var lastCoordinate = { lat: lastPoint.lat, lng: lastPoint.long, message_id: lastPoint.message_id };
+				this.setState({
+					currentLong: lastPoint.long,
+					currentLat: lastPoint.lat
+				});
+
+				console.log('state long', this.state.currentLong);
 				return new google.maps.LatLng({
 					lat: lastPoint.lat,
 					lng: lastPoint.long

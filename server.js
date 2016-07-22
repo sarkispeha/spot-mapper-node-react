@@ -71,6 +71,16 @@ app.post('/api/updatePoint', function(req, res){
 	var positionUpdate = req.body;
 	io.sockets.emit('positionUpdate', { positionUpdate: positionUpdate });
 	console.log('/api/updatePoint has been HIT!!!000000', req.body)
+	var parsedBody = JSON.parse(req.body)
+	var messageId = parsedBody.response.feedMessageResponse.messages.message.id;
+	var latitude = parsedBody.response.feedMessageResponse.messages.message.latitude;
+	var longitude = parsedBody.response.feedMessageResponse.messages.message.longitude;
+	var created_at = parsedBody.response.feedMessageResponse.messages.message.dateTime.split('').splice(0,19).join('');
+	Point.findOneAndUpdate(
+		{message_id: messageId},
+		{message_id: messageId, long: longitude, lat: latitude, created_at : created_at},
+		{upsert: true, new: true}
+	).exec()
 	res.sendStatus(200)
 })
 

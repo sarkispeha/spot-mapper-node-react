@@ -42,11 +42,13 @@ var getPoints = () => {
 			}
 		)
 		// find one and update the previous point if not new
+		/* REINSTATE AFTER TESTING
 		Point.findOneAndUpdate(
 			{message_id: messageId},
 			{message_id: messageId, long: longitude, lat: latitude, created_at : created_at},
 			{upsert: true, new: true}
 		).exec()
+		*/
 	})
 }
 

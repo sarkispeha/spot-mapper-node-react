@@ -19,7 +19,9 @@ class TestMap extends React.Component{
 	render() {
 		return <div className="GMap">
 		  <div className='UpdatedText'>
-			// <p>Current Zoom: 10</p>
+			<p>Current Zoom: 10</p>
+			<p>Current Lat: {this.state.currentLat}</p>
+			<p>Current Long: {this.state.currentLong}</p>
 		  </div>
 		  <div className='GMap-canvas' ref="mapCanvas">
 		  </div>
@@ -95,6 +97,12 @@ class TestMap extends React.Component{
   		let lastPoint = pathPointData[pathPointData.length-1];
   		console.log('last Point', lastPoint)
   		var lastCoordinate = {lat: lastPoint.lat , lng : lastPoint.long, message_id : lastPoint.message_id}
+  		this.setState({
+  			currentLong: lastPoint.long,
+  			currentLat: lastPoint.lat
+  		})
+
+		console.log('state long', this.state.currentLong)
 		return new google.maps.LatLng({
 			lat: lastPoint.lat, 
 			lng: lastPoint.long
