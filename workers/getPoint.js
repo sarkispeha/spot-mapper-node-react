@@ -21,7 +21,6 @@ var getPoints = () => {
 			, function(err, results){
 				console.log('the results of the find', results)
 				if(results.length == 0 || results[0].message_id !== messageId){
-					// console.log(results[0].message_id, messageId)
 					//request an API route that will hit the socket.io
 					let postOptions = {
 						url: 'http://localhost:8000/api/updatePoint',
