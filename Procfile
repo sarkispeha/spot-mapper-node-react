@@ -1,2 +1,2 @@
-web: node sever.js
+web: node server.js
 worker: node workers/getPoint.js
