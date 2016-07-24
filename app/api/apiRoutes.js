@@ -1,22 +1,15 @@
-
+var Point = require('../../models/points');
 
 const API = {
-	//create routes then export to server.js
 
-
-	// app.get('/api/getPoints', function(req, res){
 	allPoints: (req, res)=>{
-		console.log('allpoints called')
-		request.get('https://where-is-sark.herokuapp.com/api/getAllPoints', function(err, request, response){
-			if(err){
-				console.log('this is the err', err)
-			}else{
-				console.log('this is the response', response);
-				res.send(response)
-			}
+		console.log('allpoints API called')
+		Point.find({}, (err, results)=>{
+			console.log('getting points');
+			console.log('point find err ', err);
+			res.send(results);
 		})
 	}
-	// })
 }
 
 module.exports = API;

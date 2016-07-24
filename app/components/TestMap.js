@@ -2,6 +2,7 @@ import React from 'react';
 import {Link} from 'react-router';
 import MapStore from '../stores/MapStore';
 import MapActions from '../actions/MapActions';
+import Form from './Form'
 
 class TestMap extends React.Component{
 
@@ -23,6 +24,7 @@ class TestMap extends React.Component{
 			<p>Current Lat: {this.state.currentLat}</p>
 			<p>Current Long: {this.state.currentLong}</p>
 		  </div>
+		  <Form/>
 		  <div className='GMap-canvas' ref="mapCanvas">
 		  </div>
 		</div>

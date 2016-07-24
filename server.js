@@ -45,27 +45,7 @@ var io = require('socket.io')(server);
 /*
 EXPRESS ROUTES
 */
-// app.get('/api/getPoints', API.allPoints);
-app.get('/api/getPoints', function(req, res, next){
-		console.log('allpoints API called')
-		//TODO: CHANGE THIS TO A FIND ON THE DB FOR THIS APP
-		Point.find({}, (err, results)=>{
-			console.log('getting points');
-			console.log('point find err ', err);
-			res.send(results);
-		})
-		/*		
-		request.get('https://where-is-sark.herokuapp.com/api/getAllPoints', function(err, request, response){
-			if(err){
-				console.log('this is the err', err)
-			}else{
-				// console.log('this is the response', response);
-				res.send(response)
-			}
-		})
-		*/
-	}
-)
+app.get('/api/getPoints', API.allPoints);
 
 app.post('/api/updatePoint', function(req, res){
 	var positionUpdate = req.body;
@@ -89,6 +69,7 @@ app.post('/api/updatePoint', function(req, res){
 	res.sendStatus(200)
 })
 
+//app.post('/api/friend')
 /*
 REACT ROUTER
 */
