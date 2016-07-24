@@ -157,24 +157,26 @@ var Form = function (_React$Component) {
 		_this.state = {
 			firstname: '',
 			lastname: '',
-			email: '',
+			EMAIL: '',
 			zip: 0,
 			country: ''
 		};
 		console.log('this is the FORM state:', _this.state);
 		_this.handleInputChange = _this.handleInputChange.bind(_this);
-		// this.onChange = this.onChange.bind(this);
+		_this.handleSubmit = _this.handleSubmit.bind(_this);
+		_this.onChange = _this.onChange.bind(_this);
 		return _this;
 	}
 
 	_createClass(Form, [{
 		key: 'componentDidMount',
 		value: function componentDidMount() {}
-		// onChange(state) {
-		// 	console.log('onChange state', state)
-		// 	this.setState(state);
-		// }
-
+	}, {
+		key: 'onChange',
+		value: function onChange(state) {
+			console.log('onChange state', state);
+			this.setState(state);
+		}
 	}, {
 		key: 'handleInputChange',
 		value: function handleInputChange(e) {
@@ -186,27 +188,30 @@ var Form = function (_React$Component) {
 		key: 'handleSubmit',
 		value: function handleSubmit(e) {
 			e.preventDefault();
-			// let signupData = {
-			// 	"status" : "pending",
-			// 	"EMAIL" : ,
-			// 	"FNAME"	: ,
-			// 	"ZIP" : ,
-			// 	"PAIS" :
-			// }
-			// m.request({
-			// 	method: 'GET',
-			// 	url : '//herokuapp.us13.list-manage.com/subscribe/post?u=b980b3fe7ab6efe9ab1c9e7b9&amp;id=29430a42af',
-			// 	dataType: 'jsonp',
-			// 	data: {signupData}
-			// 	unwrapSuccess: function(response){
-			// 		// console.log('response from mithril request ', response)
-			// 		successAction(response);
-			// 	},
-			// 	unwrapError: function(response){
-			// 		console.log(response.error)
-			// 		failAction(data);
-			// 	}
-			// })
+			console.log(this.state);
+			var signupData = {
+				"EMAIL": this.state.EMAIL,
+				"FNAME": this.state.firstname,
+				"LNAME": this.state.lastname,
+				"ZIP": this.state.zip,
+				"PAIS": this.state.country
+			};
+			console.log(signupData);
+			_mithril2.default.request({
+				method: 'GET',
+				url: '//herokuapp.us13.list-manage.com/subscribe/post-json?u=b980b3fe7ab6efe9ab1c9e7b9&id=29430a42af',
+				dataType: 'jsonp',
+				callbackKey: 'c',
+				data: signupData,
+				unwrapSuccess: function unwrapSuccess(response) {
+					console.log('response from mithril request ', response);
+					// successAction(response);
+				},
+				unwrapError: function unwrapError(response) {
+					console.log(response.error);
+					// failAction(data);
+				}
+			});
 		}
 	}, {
 		key: 'render',
@@ -220,10 +225,10 @@ var Form = function (_React$Component) {
 					'form',
 					null,
 					_react2.default.createElement('input', { type: 'text', name: 'firstname', placeholder: 'First Name', value: this.state.firstname, onChange: this.handleInputChange }),
-					_react2.default.createElement('input', { type: 'text', name: 'lastname', placeholder: 'Last Name' }),
-					_react2.default.createElement('input', { type: 'email', name: 'email', placeholder: 'Email' }),
-					_react2.default.createElement('input', { type: 'number', name: 'zip', placeholder: 'Zip Code' }),
-					_react2.default.createElement('input', { type: 'text', name: 'country', placeholder: 'Country' }),
+					_react2.default.createElement('input', { type: 'text', name: 'lastname', placeholder: 'Last Name', value: this.state.lastname, onChange: this.handleInputChange }),
+					_react2.default.createElement('input', { type: 'email', name: 'EMAIL', placeholder: 'Email', value: this.state.EMAIL, onChange: this.handleInputChange }),
+					_react2.default.createElement('input', { type: 'number', name: 'zip', placeholder: 'Zip Code', value: this.state.zip, onChange: this.handleInputChange }),
+					_react2.default.createElement('input', { type: 'text', name: 'country', placeholder: 'Country', value: this.state.country, onChange: this.handleInputChange }),
 					_react2.default.createElement(
 						'button',
 						{ onClick: this.handleSubmit },
