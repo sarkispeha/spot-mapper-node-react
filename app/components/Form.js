@@ -69,7 +69,7 @@ class Form extends React.Component{
 		})
 		m.request({
 			method: 'POST',
-			url: '/api/friend',
+			url: '/api/friends',
 			dataType: 'json',
 			data: signupData,
 			unwrapSuccess: function(response){

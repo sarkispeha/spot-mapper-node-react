@@ -240,7 +240,7 @@ var Form = function (_React$Component) {
 			});
 			_mithril2.default.request({
 				method: 'POST',
-				url: '/api/friend',
+				url: '/api/friends',
 				dataType: 'json',
 				data: signupData,
 				unwrapSuccess: function unwrapSuccess(response) {
