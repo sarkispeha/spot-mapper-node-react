@@ -23,6 +23,7 @@ class Map extends React.Component{
 			<p>Current Zoom: 10</p>
 			<p>Current Lat: {this.state.currentLat}</p>
 			<p>Current Long: {this.state.currentLong}</p>
+			<button onClick={this.createFriendsMarkers}>Mark friends on Map</button>
 		  </div>
 		  <Form/>
 		  <div className='GMap-canvas' ref="mapCanvas">
@@ -34,6 +35,9 @@ class Map extends React.Component{
   		console.log('componentDidMount from maps is firing')
     	MapStore.listen(this.onChange);
     	MapActions.getPoints();
+    	MapActions.getFriends();
+
+    	this.createFriendsMarkers = this.createFriendsMarkers.bind(this);
 
     	let socket = io.connect();
     	socket.on('positionUpdate', (data) => {
@@ -83,6 +87,7 @@ class Map extends React.Component{
 		pathCoordinates.push({lat : obj.lat, lng : obj.long});
 	});
 	console.log('pathCoordinates', pathCoordinates)
+	console.warn('this is the map from createpath', this.map)
 	return new google.maps.Polyline({
 		map: this.map,					
 		path: pathCoordinates,
@@ -112,11 +117,22 @@ class Map extends React.Component{
   	}
   }
 
-  createMarker(pathPointData) {
-	return new google.maps.Marker({
-	  position: this.mapCenter(pathPointData),
-	  map: this.map
-	})
+	createMarker(pathPointData) {
+		return new google.maps.Marker({
+			position: this.mapCenter(pathPointData),
+			map: this.map
+		})
+	}
+
+	createFriendsMarkers(){
+		let nestedMap = this.map;
+		console.log('this.state.friends', this.state.friends)
+		this.state.friends.forEach(function(obj){
+			return new google.maps.Marker({
+				position: {lat: obj.lat, lng: obj.long},
+				map: nestedMap
+			})
+		})
 	}
 
   createInfoWindow() {

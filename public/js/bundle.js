@@ -23,7 +23,7 @@ var MapActions = function () {
 	function MapActions() {
 		_classCallCheck(this, MapActions);
 
-		this.generateActions('getPointsSuccess', 'getPointsFail', 'positionUpdate');
+		this.generateActions('getPointsSuccess', 'getPointsFail', 'positionUpdate', 'getFriendsSuccess', 'getFriendsFail');
 	}
 
 	_createClass(MapActions, [{
@@ -48,6 +48,24 @@ var MapActions = function () {
 		key: 'newPositionUpdate',
 		value: function newPositionUpdate(newPosition) {
 			this.actions.positionUpdate(newPosition);
+		}
+	}, {
+		key: 'getFriends',
+		value: function getFriends() {
+			var successAction = this.actions.getFriendsSuccess;
+			var failAction = this.actions.getFriendsFail;
+			_mithril2.default.request({
+				method: 'GET',
+				url: '/api/friends',
+				unwrapSuccess: function unwrapSuccess(response) {
+					console.log('response from mithril request ', response);
+					successAction(response);
+				},
+				unwrapError: function unwrapError(response) {
+					console.log(response.error);
+					failAction(data);
+				}
+			});
 		}
 	}]);
 
@@ -236,7 +254,7 @@ var Form = function (_React$Component) {
 	}, {
 		key: 'render',
 		value: function render() {
-			console.log('FORM rendering');
+			// console.log('FORM rendering')
 			return _react2.default.createElement(
 				'div',
 				{ className: 'friend-form' },
@@ -418,6 +436,11 @@ var Map = function (_React$Component) {
 						null,
 						'Current Long: ',
 						this.state.currentLong
+					),
+					_react2.default.createElement(
+						'button',
+						{ onClick: this.createFriendsMarkers },
+						'Mark friends on Map'
 					)
 				),
 				_react2.default.createElement(_Form2.default, null),
@@ -430,6 +453,9 @@ var Map = function (_React$Component) {
 			console.log('componentDidMount from maps is firing');
 			_MapStore2.default.listen(this.onChange);
 			_MapActions2.default.getPoints();
+			_MapActions2.default.getFriends();
+
+			this.createFriendsMarkers = this.createFriendsMarkers.bind(this);
 
 			var socket = io.connect();
 			socket.on('positionUpdate', function (data) {
@@ -483,6 +509,7 @@ var Map = function (_React$Component) {
 				pathCoordinates.push({ lat: obj.lat, lng: obj.long });
 			});
 			console.log('pathCoordinates', pathCoordinates);
+			console.warn('this is the map from createpath', this.map);
 			return new google.maps.Polyline({
 				map: this.map,
 				path: pathCoordinates,
@@ -518,6 +545,18 @@ var Map = function (_React$Component) {
 			return new google.maps.Marker({
 				position: this.mapCenter(pathPointData),
 				map: this.map
+			});
+		}
+	}, {
+		key: 'createFriendsMarkers',
+		value: function createFriendsMarkers() {
+			var nestedMap = this.map;
+			console.log('this.state.friends', this.state.friends);
+			this.state.friends.forEach(function (obj) {
+				return new google.maps.Marker({
+					position: { lat: obj.lat, lng: obj.long },
+					map: nestedMap
+				});
 			});
 		}
 	}, {
@@ -639,6 +678,7 @@ var MapStore = function () {
     this.bindActions(_MapActions2.default);
     this.points = [];
     this.positionUpdate = {};
+    this.friends = [];
   }
 
   _createClass(MapStore, [{
@@ -650,7 +690,7 @@ var MapStore = function () {
   }, {
     key: 'onGetPointsFail',
     value: function onGetPointsFail(errorMessage) {
-      console.warning(errorMessage);
+      console.warn(errorMessage);
     }
   }, {
     key: 'onPositionUpdate',
@@ -658,6 +698,16 @@ var MapStore = function () {
       // this.positionUpdate = data;
       this.points.push(newPoint.positionUpdate);
       console.log('position updating from MapStorejs', this.points);
+    }
+  }, {
+    key: 'onGetFriendsSuccess',
+    value: function onGetFriendsSuccess(data) {
+      this.friends = data;
+    }
+  }, {
+    key: 'onGetFriendsFail',
+    value: function onGetFriendsFail(errorMessage) {
+      console.warn(errorMessage);
     }
   }]);
 

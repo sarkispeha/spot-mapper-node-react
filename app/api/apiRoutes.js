@@ -36,7 +36,7 @@ const API = {
 			}
 		});
 		getCoordinates.then(function(){
-			console.log('SAVING FRIEND TO DB', friendInfo),
+			console.log('SAVING FRIEND TO DB', friendInfo);
 			Friend.findOneAndUpdate(
 				{firstName: friendInfo.FNAME, lastName: friendInfo.LNAME},
 				{firstName: friendInfo.FNAME,
@@ -55,6 +55,15 @@ const API = {
 			res.sendStatus(200)
 		}).catch(function(){
 			console.log('CATCH')
+		})
+	},
+
+	getFriends: (req,res)=>{
+		console.log('allpoints API called')
+		Friend.find({}, (err, results)=>{
+			console.log('getting friends');
+			console.log('friend find err ', err);
+			res.send(results);
 		})
 	}
 }

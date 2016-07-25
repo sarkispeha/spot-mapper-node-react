@@ -6,6 +6,7 @@ class MapStore {
     this.bindActions(MapActions);
     this.points = [];
     this.positionUpdate = {};
+    this.friends = [];
   }
 
   onGetPointsSuccess(data){
@@ -14,13 +15,21 @@ class MapStore {
   }
 
   onGetPointsFail(errorMessage){
-  	console.warning(errorMessage)
+  	console.warn(errorMessage)
   }
 
   onPositionUpdate(newPoint){
   	// this.positionUpdate = data;
     this.points.push(newPoint.positionUpdate)
     console.log('position updating from MapStorejs', this.points)
+  }
+
+  onGetFriendsSuccess(data){
+    this.friends = data;
+  }
+
+  onGetFriendsFail(errorMessage){
+    console.warn(errorMessage)
   }
 
 }

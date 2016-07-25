@@ -68,7 +68,10 @@ app.post('/api/updatePoint', function(req, res){
 	).exec()
 	res.sendStatus(200)
 })
-app.post('/api/friend', API.saveFriend);
+
+app.get('/api/friends', API.getFriends);
+
+app.post('/api/friends', API.saveFriend);
 /*
 REACT ROUTER
 */

@@ -82,7 +82,7 @@ class Form extends React.Component{
 
 	}
 	render() {
-		console.log('FORM rendering')
+		// console.log('FORM rendering')
 		return <div className="friend-form">
 			{this.state.submitMessage}
 			<form>

@@ -6,7 +6,9 @@ class MapActions {
 		this.generateActions(
 			'getPointsSuccess',
 			'getPointsFail',
-			'positionUpdate'
+			'positionUpdate',
+			'getFriendsSuccess',
+			'getFriendsFail'
 		);
 	}
 
@@ -29,6 +31,23 @@ class MapActions {
 
 	newPositionUpdate(newPosition) {
 		this.actions.positionUpdate(newPosition);
+	}
+
+	getFriends(){
+		let successAction = this.actions.getFriendsSuccess;
+		let failAction = this.actions.getFriendsFail;
+		m.request({
+			method: 'GET',
+			url : '/api/friends',
+			unwrapSuccess: function(response){
+				console.log('response from mithril request ', response)
+				successAction(response);
+			},
+			unwrapError: function(response){
+				console.log(response.error)
+				failAction(data);
+			}
+		})
 	}
 }
 
