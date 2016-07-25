@@ -9,9 +9,13 @@ class Form extends React.Component{
 		this.state = {
 			firstname : '',
 			lastname: '',
-			EMAIL: '',
-			zip: 0,
-			country: ''
+			email: '',
+			address: '',
+			city: '',
+			state: '',
+			zip: '',
+			country: '',
+			submitMessage: ''
 		}
 		console.log('this is the FORM state:', this.state)
 		this.handleInputChange = this.handleInputChange.bind(this)
@@ -36,10 +40,14 @@ class Form extends React.Component{
 	handleSubmit(e){
 		e.preventDefault()
 		console.log(this.state)
+		let nestedThis = this;
 		let signupData = {
-			"EMAIL" : this.state.EMAIL,
+			"EMAIL" : this.state.email,
 			"FNAME"	: this.state.firstname,
 			"LNAME" : this.state.lastname,
+			"ADDRESS" : this.state.address,
+			"CITY" : this.state.city,
+			"STATE" : this.state.state,
 			"ZIP" : this.state.zip,
 			"PAIS" : this.state.country 
 		}
@@ -51,12 +59,25 @@ class Form extends React.Component{
 			callbackKey: 'c',
 			data: signupData,
 			unwrapSuccess: function(response){
-				console.log('response from mithril request ', response)
+				console.log('response from mithril mailchimp request ', response);
+				nestedThis.setState({submitMessage: response.msg});
 				// successAction(response);
 			},
 			unwrapError: function(response){
-				console.log(response.error)
+				console.log(response.error);
 				// failAction(data);
+			}
+		})
+		m.request({
+			method: 'POST',
+			url: '/api/friend',
+			dataType: 'json',
+			data: signupData,
+			unwrapSuccess: function(response){
+				console.log('response from mithril save friend api request', response);
+			},
+			unwrapError: function(response){
+				console.log('error from mithril save friend request', response);
 			}
 		})
 
@@ -64,11 +85,14 @@ class Form extends React.Component{
 	render() {
 		console.log('FORM rendering')
 		return <div className="friend-form">
-			{this.state.firstname}
+			{this.state.submitMessage}
 			<form>
 				<input type="text" name="firstname" placeholder="First Name" value={this.state.firstname} onChange={this.handleInputChange}/>
 				<input type="text" name="lastname" placeholder="Last Name" value={this.state.lastname} onChange={this.handleInputChange}/>
-				<input type="email" name="EMAIL" placeholder="Email" value={this.state.EMAIL} onChange={this.handleInputChange}/>
+				<input type="email" name="email" placeholder="Email" value={this.state.email} onChange={this.handleInputChange}/>
+				<input type="text" name="address" placeholder="Address" value={this.state.address} onChange={this.handleInputChange}/>
+				<input type="text" name="city" placeholder="City" value={this.state.city} onChange={this.handleInputChange}/>
+				<input type="text" name="state" placeholder="State" value={this.state.state} onChange={this.handleInputChange}/>
 				<input type="number" name="zip" placeholder="Zip Code" value={this.state.zip} onChange={this.handleInputChange}/>
 				<input type="text" name="country" placeholder="Country" value={this.state.country} onChange={this.handleInputChange}/>
 				<button onClick={this.handleSubmit}> Submit</button>
