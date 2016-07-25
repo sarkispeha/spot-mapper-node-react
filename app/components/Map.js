@@ -7,10 +7,10 @@ import Form from './Form'
 class Map extends React.Component{
 
 	constructor(props) {
-		console.log('constructor is firing from testmaps');
+		console.log('constructor is firing from map');
 		super(props);
 		this.state = MapStore.getState();
-		console.log('this is thes state:', this.state)
+		console.log('this is the state:', this.state)
 		this.onChange = this.onChange.bind(this);
 	}
 	// static propTypes() {

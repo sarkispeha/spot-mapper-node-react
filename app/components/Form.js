@@ -34,7 +34,6 @@ class Form extends React.Component{
 	handleInputChange(e){
 		let targetName = e.target.name
 		this.setState({[targetName] : e.target.value})
-		console.log(this.state[targetName])
 	}
 
 	handleSubmit(e){
@@ -49,7 +48,7 @@ class Form extends React.Component{
 			"CITY" : this.state.city,
 			"STATE" : this.state.state,
 			"ZIP" : this.state.zip,
-			"PAIS" : this.state.country 
+			"COUNTRY" : this.state.country 
 		}
 		console.log(signupData)
 		m.request({

@@ -186,7 +186,6 @@ var Form = function (_React$Component) {
 		value: function handleInputChange(e) {
 			var targetName = e.target.name;
 			this.setState(_defineProperty({}, targetName, e.target.value));
-			console.log(this.state[targetName]);
 		}
 	}, {
 		key: 'handleSubmit',
@@ -202,7 +201,7 @@ var Form = function (_React$Component) {
 				"CITY": this.state.city,
 				"STATE": this.state.state,
 				"ZIP": this.state.zip,
-				"PAIS": this.state.country
+				"COUNTRY": this.state.country
 			};
 			console.log(signupData);
 			_mithril2.default.request({
@@ -381,12 +380,12 @@ var Map = function (_React$Component) {
 	function Map(props) {
 		_classCallCheck(this, Map);
 
-		console.log('constructor is firing from testmaps');
+		console.log('constructor is firing from map');
 
 		var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Map).call(this, props));
 
 		_this.state = _MapStore2.default.getState();
-		console.log('this is thes state:', _this.state);
+		console.log('this is the state:', _this.state);
 		_this.onChange = _this.onChange.bind(_this);
 		return _this;
 	}
