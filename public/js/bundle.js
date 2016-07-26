@@ -23,7 +23,7 @@ var MapActions = function () {
 	function MapActions() {
 		_classCallCheck(this, MapActions);
 
-		this.generateActions('getPointsSuccess', 'getPointsFail', 'positionUpdate', 'getFriendsSuccess', 'getFriendsFail');
+		this.generateActions('getPointsSuccess', 'getPointsFail', 'positionUpdate', 'getFriendsSuccess', 'getFriendsFail', 'friendUpdate');
 	}
 
 	_createClass(MapActions, [{
@@ -66,6 +66,11 @@ var MapActions = function () {
 					failAction(data);
 				}
 			});
+		}
+	}, {
+		key: 'newFriendUpdate',
+		value: function newFriendUpdate(newFriend) {
+			this.actions.friendUpdate(newFriend);
 		}
 	}]);
 
@@ -152,6 +157,10 @@ var _mithril = require('mithril');
 
 var _mithril2 = _interopRequireDefault(_mithril);
 
+var _MapActions = require('../actions/MapActions');
+
+var _MapActions2 = _interopRequireDefault(_MapActions);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
@@ -181,7 +190,8 @@ var Form = function (_React$Component) {
 			state: '',
 			zip: '',
 			country: '',
-			submitMessage: ''
+			submitMessage: '',
+			newFriend: ''
 		};
 		console.log('this is the FORM state:', _this.state);
 		_this.handleInputChange = _this.handleInputChange.bind(_this);
@@ -196,7 +206,7 @@ var Form = function (_React$Component) {
 	}, {
 		key: 'onChange',
 		value: function onChange(state) {
-			console.log('onChange state', state);
+			console.log('onChange from FORM is firing, state', state);
 			this.setState(state);
 		}
 	}, {
@@ -245,6 +255,8 @@ var Form = function (_React$Component) {
 				data: signupData,
 				unwrapSuccess: function unwrapSuccess(response) {
 					console.log('response from mithril save friend api request', response);
+					nestedThis.setState({ newFriend: response.newFriend });
+					_MapActions2.default.newFriendUpdate(nestedThis.state.newFriend);
 				},
 				unwrapError: function unwrapError(response) {
 					console.log('error from mithril save friend request', response);
@@ -259,6 +271,7 @@ var Form = function (_React$Component) {
 				'div',
 				{ className: 'friend-form' },
 				this.state.submitMessage,
+				this.state.newFriend.lat,
 				_react2.default.createElement(
 					'form',
 					null,
@@ -285,7 +298,7 @@ var Form = function (_React$Component) {
 
 exports.default = Form;
 
-},{"mithril":27,"react":"react"}],5:[function(require,module,exports){
+},{"../actions/MapActions":1,"mithril":27,"react":"react"}],5:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -398,9 +411,9 @@ var Map = function (_React$Component) {
 	function Map(props) {
 		_classCallCheck(this, Map);
 
-		console.log('constructor is firing from map');
-
 		var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Map).call(this, props));
+		// console.log('constructor is firing from map');
+
 
 		_this.state = _MapStore2.default.getState();
 		console.log('this is the state:', _this.state);
@@ -450,7 +463,7 @@ var Map = function (_React$Component) {
 	}, {
 		key: 'componentDidMount',
 		value: function componentDidMount() {
-			console.log('componentDidMount from maps is firing');
+			// console.log('componentDidMount from maps is firing')
 			_MapStore2.default.listen(this.onChange);
 			_MapActions2.default.getPoints();
 			_MapActions2.default.getFriends();
@@ -462,6 +475,10 @@ var Map = function (_React$Component) {
 				console.log('SOCKET UPDATE', data);
 				_MapActions2.default.newPositionUpdate(data);
 			});
+			// socket.on('newFriend', (data)=>{
+			// 	console.log('NEWFRIEND SOCKET', data)
+			// 	MapActions.newFriendUpdate(data)
+			// });	
 		}
 	}, {
 		key: 'onChange',
@@ -471,6 +488,8 @@ var Map = function (_React$Component) {
 			this.map = this.createMap(pathPointData);
 			this.path = this.createPath(pathPointData);
 			this.marker = this.createMarker(pathPointData);
+			this.newFriendMarker = this.createNewFriendMarker();
+
 			console.log('onChange from maps is firing', state);
 		}
 
@@ -508,8 +527,7 @@ var Map = function (_React$Component) {
 			pathPointData.forEach(function (obj) {
 				pathCoordinates.push({ lat: obj.lat, lng: obj.long });
 			});
-			console.log('pathCoordinates', pathCoordinates);
-			console.warn('this is the map from createpath', this.map);
+			// console.log('pathCoordinates', pathCoordinates)
 			return new google.maps.Polyline({
 				map: this.map,
 				path: pathCoordinates,
@@ -525,14 +543,14 @@ var Map = function (_React$Component) {
 			// console.log('pathPointData from mapcenter', pathPointData)
 			if (pathPointData != undefined) {
 				var lastPoint = pathPointData[pathPointData.length - 1];
-				console.log('last Point', lastPoint);
+				// console.log('last Point', lastPoint)
 				var lastCoordinate = { lat: lastPoint.lat, lng: lastPoint.long, message_id: lastPoint.message_id };
 				this.setState({
 					currentLong: lastPoint.long,
 					currentLat: lastPoint.lat
 				});
 
-				console.log('state long', this.state.currentLong);
+				// console.log('state long', this.state.currentLong)
 				return new google.maps.LatLng({
 					lat: lastPoint.lat,
 					lng: lastPoint.long
@@ -558,6 +576,22 @@ var Map = function (_React$Component) {
 					map: nestedMap
 				});
 			});
+		}
+	}, {
+		key: 'createNewFriendMarker',
+		value: function createNewFriendMarker() {
+			console.log('createNewFriendMarker FIRING', this.state.friendUpdate);
+
+			var newFriendCoord = { lat: this.state.friendUpdate.lat, lng: this.state.friendUpdate.lng };
+			console.info('newFriendCoord', newFriendCoord);
+			if (newFriendCoord.lat == undefined || newFriendCoord.lng == undefined) {
+				console.warn('no new friend to place on the goddamn map');
+			} else {
+				return new google.maps.Marker({
+					position: newFriendCoord,
+					map: this.map
+				});
+			}
 		}
 	}, {
 		key: 'createInfoWindow',
@@ -679,6 +713,7 @@ var MapStore = function () {
     this.points = [];
     this.positionUpdate = {};
     this.friends = [];
+    this.friendUpdate = {};
   }
 
   _createClass(MapStore, [{
@@ -695,7 +730,6 @@ var MapStore = function () {
   }, {
     key: 'onPositionUpdate',
     value: function onPositionUpdate(newPoint) {
-      // this.positionUpdate = data;
       this.points.push(newPoint.positionUpdate);
       console.log('position updating from MapStorejs', this.points);
     }
@@ -708,6 +742,13 @@ var MapStore = function () {
     key: 'onGetFriendsFail',
     value: function onGetFriendsFail(errorMessage) {
       console.warn(errorMessage);
+    }
+  }, {
+    key: 'onFriendUpdate',
+    value: function onFriendUpdate(newFriend) {
+      console.log('newfriend from mapstore', newFriend);
+      // this.friends.push(newFriend)
+      this.friendUpdate = newFriend;
     }
   }]);
 

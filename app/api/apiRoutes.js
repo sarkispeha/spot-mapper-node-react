@@ -36,6 +36,7 @@ const API = {
 			}
 		});
 		getCoordinates.then(function(){
+			// io.sockets.emit('newFriend', { newFriend: {lat: friendInfo.latitude, lng: friendInfo.longitude} });
 			console.log('SAVING FRIEND TO DB', friendInfo);
 			Friend.findOneAndUpdate(
 				{firstName: friendInfo.FNAME, lastName: friendInfo.LNAME},
@@ -52,7 +53,8 @@ const API = {
 				},
 				{upsert: true, new: true}
 			).exec()
-			res.sendStatus(200)
+			// res.sendStatus(200)
+			res.send({ newFriend: {lat: friendInfo.latitude, lng: friendInfo.longitude} })
 		}).catch(function(){
 			console.log('CATCH')
 		})

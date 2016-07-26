@@ -1,5 +1,7 @@
 import React from 'react';
 import m from 'mithril';
+import MapActions from '../actions/MapActions';
+
 
 class Form extends React.Component{
 	
@@ -15,7 +17,8 @@ class Form extends React.Component{
 			state: '',
 			zip: '',
 			country: '',
-			submitMessage: ''
+			submitMessage: '',
+			newFriend: ''
 		}
 		console.log('this is the FORM state:', this.state)
 		this.handleInputChange = this.handleInputChange.bind(this)
@@ -27,7 +30,7 @@ class Form extends React.Component{
 
 	}
 	onChange(state) {
-		console.log('onChange state', state)
+		console.log('onChange from FORM is firing, state', state)
 		this.setState(state);
 	}
 
@@ -74,6 +77,8 @@ class Form extends React.Component{
 			data: signupData,
 			unwrapSuccess: function(response){
 				console.log('response from mithril save friend api request', response);
+				nestedThis.setState({newFriend: response.newFriend})
+				MapActions.newFriendUpdate(nestedThis.state.newFriend)
 			},
 			unwrapError: function(response){
 				console.log('error from mithril save friend request', response);
@@ -85,6 +90,7 @@ class Form extends React.Component{
 		// console.log('FORM rendering')
 		return <div className="friend-form">
 			{this.state.submitMessage}
+			{this.state.newFriend.lat}
 			<form>
 				<input type="text" name="firstname" placeholder="First Name" value={this.state.firstname} onChange={this.handleInputChange}/>
 				<input type="text" name="lastname" placeholder="Last Name" value={this.state.lastname} onChange={this.handleInputChange}/>

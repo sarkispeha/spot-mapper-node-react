@@ -7,6 +7,7 @@ class MapStore {
     this.points = [];
     this.positionUpdate = {};
     this.friends = [];
+    this.friendUpdate = {};
   }
 
   onGetPointsSuccess(data){
@@ -19,7 +20,6 @@ class MapStore {
   }
 
   onPositionUpdate(newPoint){
-  	// this.positionUpdate = data;
     this.points.push(newPoint.positionUpdate)
     console.log('position updating from MapStorejs', this.points)
   }
@@ -30,6 +30,12 @@ class MapStore {
 
   onGetFriendsFail(errorMessage){
     console.warn(errorMessage)
+  }
+
+  onFriendUpdate(newFriend){
+    console.log('newfriend from mapstore', newFriend)
+    // this.friends.push(newFriend)
+    this.friendUpdate = newFriend;
   }
 
 }

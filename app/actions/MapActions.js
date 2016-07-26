@@ -8,7 +8,8 @@ class MapActions {
 			'getPointsFail',
 			'positionUpdate',
 			'getFriendsSuccess',
-			'getFriendsFail'
+			'getFriendsFail',
+			'friendUpdate'
 		);
 	}
 
@@ -48,6 +49,10 @@ class MapActions {
 				failAction(data);
 			}
 		})
+	}
+
+	newFriendUpdate(newFriend){
+		this.actions.friendUpdate(newFriend);
 	}
 }
 

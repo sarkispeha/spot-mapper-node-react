@@ -7,7 +7,7 @@ import Form from './Form'
 class Map extends React.Component{
 
 	constructor(props) {
-		console.log('constructor is firing from map');
+		// console.log('constructor is firing from map');
 		super(props);
 		this.state = MapStore.getState();
 		console.log('this is the state:', this.state)
@@ -25,14 +25,14 @@ class Map extends React.Component{
 			<p>Current Long: {this.state.currentLong}</p>
 			<button onClick={this.createFriendsMarkers}>Mark friends on Map</button>
 		  </div>
-		  <Form/>
+		  <Form />
 		  <div className='GMap-canvas' ref="mapCanvas">
 		  </div>
 		</div>
 	}
 
 	componentDidMount() {
-  		console.log('componentDidMount from maps is firing')
+  		// console.log('componentDidMount from maps is firing')
     	MapStore.listen(this.onChange);
     	MapActions.getPoints();
     	MapActions.getFriends();
@@ -44,6 +44,10 @@ class Map extends React.Component{
     		console.log('SOCKET UPDATE', data)
 	    	MapActions.newPositionUpdate(data);
 	    });
+		// socket.on('newFriend', (data)=>{
+		// 	console.log('NEWFRIEND SOCKET', data)
+		// 	MapActions.newFriendUpdate(data)
+		// });	
   	}
 
   	onChange(state) {
@@ -52,6 +56,8 @@ class Map extends React.Component{
     	this.map = this.createMap(pathPointData);
     	this.path = this.createPath(pathPointData);
     	this.marker = this.createMarker(pathPointData)
+    	this.newFriendMarker = this.createNewFriendMarker()
+
   		console.log('onChange from maps is firing', state)
   	}
 
@@ -86,8 +92,7 @@ class Map extends React.Component{
   	pathPointData.forEach(function(obj){
 		pathCoordinates.push({lat : obj.lat, lng : obj.long});
 	});
-	console.log('pathCoordinates', pathCoordinates)
-	console.warn('this is the map from createpath', this.map)
+	// console.log('pathCoordinates', pathCoordinates)
 	return new google.maps.Polyline({
 		map: this.map,					
 		path: pathCoordinates,
@@ -102,14 +107,14 @@ class Map extends React.Component{
   	// console.log('pathPointData from mapcenter', pathPointData)
   	if (pathPointData != undefined){
   		let lastPoint = pathPointData[pathPointData.length-1];
-  		console.log('last Point', lastPoint)
+  		// console.log('last Point', lastPoint)
   		var lastCoordinate = {lat: lastPoint.lat , lng : lastPoint.long, message_id : lastPoint.message_id}
   		this.setState({
   			currentLong: lastPoint.long,
   			currentLat: lastPoint.lat
   		})
 
-		console.log('state long', this.state.currentLong)
+		// console.log('state long', this.state.currentLong)
 		return new google.maps.LatLng({
 			lat: lastPoint.lat, 
 			lng: lastPoint.long
@@ -135,6 +140,21 @@ class Map extends React.Component{
 		})
 	}
 
+	createNewFriendMarker(){
+		console.log('createNewFriendMarker FIRING', this.state.friendUpdate)
+
+		let newFriendCoord = { lat: this.state.friendUpdate.lat, lng: this.state.friendUpdate.lng }
+		console.info('newFriendCoord', newFriendCoord)
+		if(newFriendCoord.lat == undefined || newFriendCoord.lng == undefined){
+			console.warn('no new friend to place on the goddamn map')
+		}else{
+			return new google.maps.Marker({
+				position: newFriendCoord,
+				map: this.map
+			})
+		}
+	}
+
   createInfoWindow() {
 	let contentString = "<div class='InfoWindow'>I'm a Window that contains Info Yay</div>"
 	return new google.maps.InfoWindow({
@@ -144,11 +164,12 @@ class Map extends React.Component{
 	})
   }
   
-  handleZoomChange() {
-	this.setState({
-	  zoom: this.map.getZoom()
-	})
-  }
+	handleZoomChange() {
+		this.setState({
+		  zoom: this.map.getZoom()
+		})
+	}
+
 }
 
 export default Map;
