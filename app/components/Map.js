@@ -11,6 +11,7 @@ class Map extends React.Component{
 		super(props);
 		this.state = MapStore.getState();
 		console.log('this is the state:', this.state)
+		this.createFriendsMarkers = this.createFriendsMarkers.bind(this);
 		this.onChange = this.onChange.bind(this);
 	}
 	// static propTypes() {
@@ -25,7 +26,7 @@ class Map extends React.Component{
 			<p>Current Long: {this.state.currentLong}</p>
 			<button onClick={this.createFriendsMarkers}>Mark friends on Map</button>
 		  </div>
-		  <Form />
+		  <Form/>
 		  <div className='GMap-canvas' ref="mapCanvas">
 		  </div>
 		</div>
@@ -37,7 +38,7 @@ class Map extends React.Component{
     	MapActions.getPoints();
     	MapActions.getFriends();
 
-    	this.createFriendsMarkers = this.createFriendsMarkers.bind(this);
+    	// this.createFriendsMarkers = this.createFriendsMarkers.bind(this);
 
     	let socket = io.connect();
     	socket.on('positionUpdate', (data) => {
@@ -113,12 +114,21 @@ class Map extends React.Component{
   			currentLong: lastPoint.long,
   			currentLat: lastPoint.lat
   		})
-
-		// console.log('state long', this.state.currentLong)
-		return new google.maps.LatLng({
-			lat: lastPoint.lat, 
-			lng: lastPoint.long
-		})	
+  		if(this.state.friendUpdate.isNewPoint == true){
+  			this.state.friendUpdate.isNewPoint = false;
+  			// console.log('this is the log of friendUpdate',this.state.friendUpdate)
+  			this.setState({friendUpdate: this.state.friendUpdate})
+  			return new google.maps.LatLng({
+				lat: this.state.friendUpdate.lat, 
+				lng: this.state.friendUpdate.lng
+			})
+  		}else{
+			// console.log('state long', this.state.currentLong)
+			return new google.maps.LatLng({
+				lat: lastPoint.lat, 
+				lng: lastPoint.long
+			})
+		}
   	}
   }
 

@@ -219,6 +219,7 @@ var Form = function (_React$Component) {
 		key: 'handleSubmit',
 		value: function handleSubmit(e) {
 			e.preventDefault();
+
 			console.log(this.state);
 			var nestedThis = this;
 			var signupData = {
@@ -417,6 +418,7 @@ var Map = function (_React$Component) {
 
 		_this.state = _MapStore2.default.getState();
 		console.log('this is the state:', _this.state);
+		_this.createFriendsMarkers = _this.createFriendsMarkers.bind(_this);
 		_this.onChange = _this.onChange.bind(_this);
 		return _this;
 	}
@@ -468,7 +470,7 @@ var Map = function (_React$Component) {
 			_MapActions2.default.getPoints();
 			_MapActions2.default.getFriends();
 
-			this.createFriendsMarkers = this.createFriendsMarkers.bind(this);
+			// this.createFriendsMarkers = this.createFriendsMarkers.bind(this);
 
 			var socket = io.connect();
 			socket.on('positionUpdate', function (data) {
@@ -549,12 +551,21 @@ var Map = function (_React$Component) {
 					currentLong: lastPoint.long,
 					currentLat: lastPoint.lat
 				});
-
-				// console.log('state long', this.state.currentLong)
-				return new google.maps.LatLng({
-					lat: lastPoint.lat,
-					lng: lastPoint.long
-				});
+				if (this.state.friendUpdate.isNewPoint == true) {
+					this.state.friendUpdate.isNewPoint = false;
+					// console.log('this is the log of friendUpdate',this.state.friendUpdate)
+					this.setState({ friendUpdate: this.state.friendUpdate });
+					return new google.maps.LatLng({
+						lat: this.state.friendUpdate.lat,
+						lng: this.state.friendUpdate.lng
+					});
+				} else {
+					// console.log('state long', this.state.currentLong)
+					return new google.maps.LatLng({
+						lat: lastPoint.lat,
+						lng: lastPoint.long
+					});
+				}
 			}
 		}
 	}, {
@@ -748,7 +759,9 @@ var MapStore = function () {
     value: function onFriendUpdate(newFriend) {
       console.log('newfriend from mapstore', newFriend);
       // this.friends.push(newFriend)
-      this.friendUpdate = newFriend;
+      this.friendUpdate.lat = newFriend.lat;
+      this.friendUpdate.lng = newFriend.lng;
+      this.friendUpdate.isNewPoint = true;
     }
   }]);
 

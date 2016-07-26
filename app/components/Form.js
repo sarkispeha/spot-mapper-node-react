@@ -41,6 +41,7 @@ class Form extends React.Component{
 
 	handleSubmit(e){
 		e.preventDefault()
+
 		console.log(this.state)
 		let nestedThis = this;
 		let signupData = {

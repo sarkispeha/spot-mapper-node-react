@@ -35,7 +35,9 @@ class MapStore {
   onFriendUpdate(newFriend){
     console.log('newfriend from mapstore', newFriend)
     // this.friends.push(newFriend)
-    this.friendUpdate = newFriend;
+    this.friendUpdate.lat = newFriend.lat;
+    this.friendUpdate.lng = newFriend.lng;
+    this.friendUpdate.isNewPoint = true;
   }
 
 }
