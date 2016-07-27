@@ -9,8 +9,13 @@ var friendSchema = mongoose.Schema({
 	zip: Number,
 	state: String,
 	country: String,
-	lat: Number,
-	long: Number
+	geoLocation : {
+		'type':	{
+			type: String,
+			default: 'Point'
+		},
+		coordinates: [Number] //long, lat
+	}
 });
 
 module.exports = mongoose.model('friend', friendSchema);

@@ -144,7 +144,7 @@ class Map extends React.Component{
 		console.log('this.state.friends', this.state.friends)
 		this.state.friends.forEach(function(obj){
 			return new google.maps.Marker({
-				position: {lat: obj.lat, lng: obj.long},
+				position: {lat: obj.geoLocation.coordinates[1], lng: obj.geoLocation.coordinates[0]},
 				map: nestedMap
 			})
 		})
@@ -165,14 +165,18 @@ class Map extends React.Component{
 		}
 	}
 
-  createInfoWindow() {
-	let contentString = "<div class='InfoWindow'>I'm a Window that contains Info Yay</div>"
-	return new google.maps.InfoWindow({
-	  map: this.map,
-	  anchor: this.marker,
-	  content: contentString
-	})
-  }
+	friendsInVicinity(){
+
+	}
+
+	createInfoWindow() {
+		let contentString = "<div class='InfoWindow'>I'm a Window that contains Info Yay</div>"
+			return new google.maps.InfoWindow({
+				map: this.map,
+				anchor: this.marker,
+				content: contentString
+			})
+	}
   
 	handleZoomChange() {
 		this.setState({

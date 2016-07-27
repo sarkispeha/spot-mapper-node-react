@@ -38,6 +38,7 @@ const API = {
 		getCoordinates.then(function(){
 			// io.sockets.emit('newFriend', { newFriend: {lat: friendInfo.latitude, lng: friendInfo.longitude} });
 			console.log('SAVING FRIEND TO DB', friendInfo);
+
 			Friend.findOneAndUpdate(
 				{firstName: friendInfo.FNAME, lastName: friendInfo.LNAME},
 				{firstName: friendInfo.FNAME,
@@ -48,8 +49,9 @@ const API = {
 				zip: friendInfo.ZIP,
 				state: friendInfo.STATE,
 				country: friendInfo.COUNTRY,
-				lat: friendInfo.latitude,
-				long: friendInfo.longitude
+				geoLocation: {
+					coordinates: [friendInfo.longitude, friendInfo.latitude]
+					}
 				},
 				{upsert: true, new: true}
 			).exec()
@@ -67,6 +69,47 @@ const API = {
 			console.log('friend find err ', err);
 			res.send(results);
 		})
+	},
+
+	friendNear:(req,res)=>{
+		console.log('friendNear API called');
+		var geoData = req.body;
+		console.log('geoData', geoData)
+		Friend.find(
+			{'geoLocation.coordinates':
+				{$near:
+					{$geometry:
+						{type: "Point", coordinates: [geoData.long, geoData.lat]},
+						$minDistance: 0,
+						$maxDistance: 100000
+					}
+				}
+			},
+			(err, results)=>{
+				console.log('results from friendNear geofind',results);
+				console.log('err from friendNear geofind', err);
+				if(results.length != 0){
+					console.log('NOW WE SEND OUT THE EMAILS')
+				}else{
+					console.log('DONT SEND EMAILS')
+				}
+				res.send(results);
+			}
+		)
+		// Brewery.find(
+		// 	{'location.geo.coordinates':
+		// 		{$near:
+		// 			{$geometry:
+		// 				{type: "Point", coordinates: [geoData.lng, geoData.lat]},
+		// 				$minDistance: 0, $maxDistance: geoData.maxDist
+		// 			}			
+		// 		} , 'productType.isPackaging': true
+		// 	}
+		// 	, function(err, results){
+		// 		console.log(results);
+		// 		res.send(results);
+		// 	});
+		// }//end productNear
 	}
 }
 

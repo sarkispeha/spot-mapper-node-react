@@ -583,7 +583,7 @@ var Map = function (_React$Component) {
 			console.log('this.state.friends', this.state.friends);
 			this.state.friends.forEach(function (obj) {
 				return new google.maps.Marker({
-					position: { lat: obj.lat, lng: obj.long },
+					position: { lat: obj.geoLocation.coordinates[1], lng: obj.geoLocation.coordinates[0] },
 					map: nestedMap
 				});
 			});
@@ -604,6 +604,9 @@ var Map = function (_React$Component) {
 				});
 			}
 		}
+	}, {
+		key: 'friendsInVicinity',
+		value: function friendsInVicinity() {}
 	}, {
 		key: 'createInfoWindow',
 		value: function createInfoWindow() {
