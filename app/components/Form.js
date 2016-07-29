@@ -91,7 +91,6 @@ class Form extends React.Component{
 		// console.log('FORM rendering')
 		return <div className="friend-form">
 			{this.state.submitMessage}
-			{this.state.newFriend.lat}
 			<form>
 				<input type="text" name="firstname" placeholder="First Name" value={this.state.firstname} onChange={this.handleInputChange}/>
 				<input type="text" name="lastname" placeholder="Last Name" value={this.state.lastname} onChange={this.handleInputChange}/>

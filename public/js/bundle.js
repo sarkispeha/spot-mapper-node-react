@@ -272,7 +272,6 @@ var Form = function (_React$Component) {
 				'div',
 				{ className: 'friend-form' },
 				this.state.submitMessage,
-				this.state.newFriend.lat,
 				_react2.default.createElement(
 					'form',
 					null,
