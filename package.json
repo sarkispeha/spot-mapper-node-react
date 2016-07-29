@@ -28,6 +28,7 @@
     "gulp-if": "^2.0.1",
     "history": "^1.17.0",
     "mithril": "^0.2.5",
+    "moment": "^2.14.1",
     "mongoose": "^4.2.5",
     "morgan": "^1.6.1",
     "react": "^0.14.2",

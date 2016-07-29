@@ -15,7 +15,8 @@ var friendSchema = mongoose.Schema({
 			default: 'Point'
 		},
 		coordinates: [Number] //long, lat
-	}
+	},
+	emailSent: {type: Array, default: [2016, 8, 21]}
 });
 
 module.exports = mongoose.model('friend', friendSchema);

@@ -1,6 +1,7 @@
 var Point = require('../../models/points');
 var Friend = require('../../models/friends');
 import geocoder from 'geocoder';
+import moment from 'moment';
 
 const API = {
 
@@ -17,15 +18,13 @@ const API = {
 
 		console.log('saving friend ENDPOINT')
 		var friendInfo = req.body;
-		console.log('THIS WOULD BE PLACEINFO', friendInfo.ADDRESS, friendInfo.CITY, friendInfo.STATE)
 
 		var getCoordinates = new Promise(function(resolve, reject){
-			console.log('PROMISE FIRING')
 			if(friendInfo.ADDRESS.length !== 0 || friendInfo.CITY.length !== 0){
 				let placeInfo = friendInfo.ADDRESS + ' ' + friendInfo.CITY + ' ' + friendInfo.STATE;
 				geocoder.geocode(placeInfo,function(err, data){
-					console.log('this is the error from geocoder', err);
-					console.log('these are the coordinates from geocoder', data.results[0].geometry )
+					// console.log('this is the error from geocoder', err);
+					// console.log('these are the coordinates from geocoder', data.results[0].geometry )
 					friendInfo.latitude = data.results[0].geometry.location.lat;
 					friendInfo.longitude = data.results[0].geometry.location.lng;
 					return resolve('Success');
@@ -51,7 +50,8 @@ const API = {
 				country: friendInfo.COUNTRY,
 				geoLocation: {
 					coordinates: [friendInfo.longitude, friendInfo.latitude]
-					}
+					},
+				emailSent: [2016, 8, 21],
 				},
 				{upsert: true, new: true}
 			).exec()
@@ -88,10 +88,35 @@ const API = {
 			(err, results)=>{
 				console.log('results from friendNear geofind',results);
 				console.log('err from friendNear geofind', err);
+				let foundFriendArr = results;
 				if(results.length != 0){
-					console.log('NOW WE SEND OUT THE EMAILS')
+					console.log('FRIENDS FOUND IN SEARCH')
+					//go through array and update emailSent
+
+					foundFriendArr.forEach((friendInArea)=>{
+					//if emailsent was less than 30 days from last sending do not send out email
+						let emailSentDate = friendInArea.emailSent;
+						console.log('emailSentDate', emailSentDate)
+						let sendEmailAfterDate = moment(emailSentDate).add(30, 'days');
+						var day = sendEmailAfterDate.format('DD');
+						var month = sendEmailAfterDate.format('MM');
+						var year = sendEmailAfterDate.format('YYYY');
+						// let sendEmailAfterDate = moment([2016, 8, 21]).add(30, 'days');
+						console.log(day, month, year)
+						// console.log('sendEmailAfterDate', sendEmailAfterDate)
+						if(moment(emailSentDate).isAfter(sendEmailAfterDate)){
+							//if emailsent was greater than 30 days from last sending send email and update friend emailsent
+							console.log('NOW WE SEND OUT THE EMAILS')
+							// Friend.findOneAndUpdate(
+							// 	{firstName: friendInArea.FNAME, lastName: friendInArea.LNAME},
+							// 	emailSent: 
+							// 	)//end findOneAndUpdate
+							
+						}//end if statement
+					})//end forEach
+
 				}else{
-					console.log('DONT SEND EMAILS')
+					console.log('NO FRIENDS WERE FOUND IN SEARCH')
 				}
 				res.send(results);
 			}
