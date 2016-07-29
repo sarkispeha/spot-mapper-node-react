@@ -97,14 +97,15 @@ const API = {
 					//if emailsent was less than 30 days from last sending do not send out email
 						let emailSentDate = friendInArea.emailSent;
 						console.log('emailSentDate', emailSentDate)
-						let sendEmailAfterDate = moment(emailSentDate).add(30, 'days');
+						let startDate = moment(emailSentDate);
+						let sendEmailAfterDate = moment(startDate).add(30, 'days');
 						var day = sendEmailAfterDate.format('DD');
 						var month = sendEmailAfterDate.format('MM');
 						var year = sendEmailAfterDate.format('YYYY');
 						// let sendEmailAfterDate = moment([2016, 8, 21]).add(30, 'days');
 						console.log(day, month, year)
 						// console.log('sendEmailAfterDate', sendEmailAfterDate)
-						if(moment(emailSentDate).isAfter(sendEmailAfterDate)){
+						if(moment(sendEmailAfterDate).isAfter(emailSentDate)){
 							//if emailsent was greater than 30 days from last sending send email and update friend emailsent
 							console.log('NOW WE SEND OUT THE EMAILS')
 							// Friend.findOneAndUpdate(
