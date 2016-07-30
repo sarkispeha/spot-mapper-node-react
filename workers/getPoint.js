@@ -39,7 +39,8 @@ var getPoints = () => {
 	// 				});
 					//check DB for friends in the area
 					let friendNearOptions = {
-						url: 'http://localhost:8000/api/friendNear',
+						// url: 'http://localhost:8000/api/friendNear',
+						url: 'https://whereissarkreact.herokuapp.com/api/friendNear',
 						form : {
 							long: -118.400261,
 							lat: 33.871234
