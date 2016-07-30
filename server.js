@@ -40,7 +40,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 /**
  * Socket.io stuff.
  */
-var server = require('https').createServer(app);
+var server = require('http').createServer(app);
 var io = require('socket.io')(server);
 /*
 EXPRESS ROUTES
