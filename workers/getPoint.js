@@ -1,4 +1,4 @@
-
+'use strict'
 const request = require('request');
 const Point = require('../models/points.js');
 const Friend = require('../models/friends.js');

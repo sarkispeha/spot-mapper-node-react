@@ -114,10 +114,6 @@ const API = {
 						if(moment(today).isAfter(sendEmailAfterDate)){
 							//if emailsent was greater than 30 days from last sending send email and update friend emailsent
 							console.log('NOW WE SEND OUT THE EMAILS')
-							const mcRequest = {
-								id: donationsId,
-								email: { email: req.body.payer_email }
-							}
 							mandrillSend('proximity_email', 'Sark\'s in your \'hood!', friendInArea.firstName, friendInArea.email);
 							//update the emailSent date
 							// Friend.findOneAndUpdate(
