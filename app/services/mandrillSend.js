@@ -14,7 +14,7 @@ function mandrillTransaction (templateName, subject, friendName, email) {
 
   var message = {
     subject: subject,
-    from_email: 'sarkispeha@gmail.com',
+    from_email: 'sarkis@sarkispeha.com',
     from_name: 'Sark',
     to: [{
       email: email,
@@ -22,7 +22,7 @@ function mandrillTransaction (templateName, subject, friendName, email) {
       type: 'to'
     }],
     headers: {
-      'Reply-To': 'sarkispeha@gmail.com'
+      'Reply-To': 'sarkis@sarkispeha.com'
     },
     // TODO: Do these have default values? Can we remove them?
     important: false,

@@ -116,10 +116,11 @@ const API = {
 							console.log('NOW WE SEND OUT THE EMAILS')
 							mandrillSend('proximity_email', 'Sark\'s in your \'hood!', friendInArea.firstName, friendInArea.email);
 							//update the emailSent date
-							// Friend.findOneAndUpdate(
-							// 	{firstName: friendInArea.FNAME, lastName: friendInArea.LNAME},
-							// 	emailSent: today
-							// 	)//end findOneAndUpdate
+							Friend.findOneAndUpdate(
+								{firstName: friendInArea.firstName, lastName: friendInArea.lastName},
+								{emailSent: today},
+								{upsert: true, new: true}
+								).exec()//end findOneAndUpdate
 							
 						}//end if statement
 					})//end forEach
