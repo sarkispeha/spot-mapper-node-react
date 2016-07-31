@@ -48,6 +48,7 @@ var getPoints = () => {
 					}
 					request.post(friendNearOptions, (error, response, body)=>{
 						console.log('error from friendNear POST', error);
+						console.log('response from friendNear POST', response);
 						console.log('body from friendNear POST', body);
 					})
 		// 		}else{
@@ -68,6 +69,6 @@ var getPoints = () => {
 
 setInterval(function() {
 	getPoints();
-}, 10000);
+}, 180000);
 
 getPoints();

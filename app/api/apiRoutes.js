@@ -127,7 +127,8 @@ const API = {
 				}else{
 					console.log('NO FRIENDS WERE FOUND IN SEARCH')
 				}
-				res.send(results);
+				// res.send(results);
+				res.sendStatus(200);
 			}
 		)
 	}
