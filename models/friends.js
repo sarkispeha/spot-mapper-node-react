@@ -12,7 +12,8 @@ var friendSchema = mongoose.Schema({
 	geoLocation : {
 		'type':	{
 			type: String,
-			default: 'Point'
+			default: 'Point',
+			index: true
 		},
 		coordinates: [Number] //long, lat
 	},

@@ -48,7 +48,7 @@ var getPoints = () => {
 					}
 					request.post(friendNearOptions, (error, response, body)=>{
 						console.log('error from friendNear POST', error);
-						console.log('response from friendNear POST', response);
+						// console.log('response from friendNear POST', response);
 						console.log('body from friendNear POST', body);
 					})
 		// 		}else{
