@@ -101,24 +101,27 @@ const API = {
 					//if emailSent was less than 30 days from last sending do not send out email
 						let emailSentDate = friendInArea.emailSent.length > 0 ? friendInArea.emailSent : '1945-08-06';
 						console.log('emailSentDate', emailSentDate)
-						let startDate = moment(emailSentDate);
+						let startDate = moment(emailSentDate, 'YYYY-MM-DD');
+						// console.log('startDate', startDate)
 						let sendEmailAfterDate = moment(startDate).add(30, 'days');
+						// console.log('sendEmailAfterDate', sendEmailAfterDate)
 						var day = sendEmailAfterDate.format('DD');
 						var month = sendEmailAfterDate.format('MM');
 						var year = sendEmailAfterDate.format('YYYY');
 						var today = moment();
 						// let sendEmailAfterDate = moment([2016, 8, 21]).add(30, 'days');
-						console.log(day, month, year)
-						console.log(today.format('DD'), today.format('MM'), today.format('YYYY'))
+						console.log('sendEmailAfterDate', year, month, day)
+						let strToday = today.format('YYYY') +'-'+ today.format('MM') +'-'+ today.format('DD');
+						console.log(strToday)
 						// console.log('sendEmailAfterDate', sendEmailAfterDate)
 						if(moment(today).isAfter(sendEmailAfterDate)){
 							//if emailsent was greater than 30 days from last sending send email and update friend emailsent
 							console.log('NOW WE SEND OUT THE EMAILS')
-							mandrillSend('proximity_email', 'Sark\'s in your \'hood!', friendInArea.firstName, friendInArea.email);
+							// mandrillSend('proximity_email', 'Sark\'s in your \'hood!', friendInArea.firstName, friendInArea.email);
 							//update the emailSent date
 							Friend.findOneAndUpdate(
 								{firstName: friendInArea.firstName, lastName: friendInArea.lastName},
-								{emailSent: today},
+								{emailSent: strToday},
 								{upsert: true, new: true}
 								).exec()//end findOneAndUpdate
 							
