@@ -112,7 +112,7 @@ const API = {
 						// let sendEmailAfterDate = moment([2016, 8, 21]).add(30, 'days');
 						console.log('sendEmailAfterDate', year, month, day)
 						let strToday = today.format('YYYY') +'-'+ today.format('MM') +'-'+ today.format('DD');
-						console.log(strToday)
+						console.log('Today', strToday)
 						// console.log('sendEmailAfterDate', sendEmailAfterDate)
 						if(moment(today).isAfter(sendEmailAfterDate)){
 							//if emailsent was greater than 30 days from last sending send email and update friend emailsent

@@ -46,7 +46,7 @@ var io = require('socket.io')(server);
 EXPRESS ROUTES
 */
 app.get('/api/getPoints', API.allPoints);
-
+//TODO abstract sockets to api
 app.post('/api/updatePoint', function(req, res){
 	var positionUpdate = req.body;
 	io.sockets.emit('positionUpdate', { positionUpdate: positionUpdate });
@@ -57,10 +57,6 @@ app.post('/api/updatePoint', function(req, res){
 	var longitude = parsedBody.long;
 	var created_at = parsedBody.created_at;
 	var newPoint = new Point({message_id: messageId, long: longitude, lat: latitude, created_at : created_at})
-	// newPoint.save(function(err,result){
-	// 	console.log('this is the newpoint save error', err)
-	// 	res.send(result)
-	// });
 	Point.findOneAndUpdate(
 		{message_id: messageId},
 		{message_id: messageId, long: longitude, lat: latitude, created_at : created_at},
