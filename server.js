@@ -1,7 +1,7 @@
 // Babel ES6/JSX Compiler
 require('babel-register');
 
-var config = require('./config');
+var config = require('./config/config');
 
 var async = require('async');
 var request = require('request');
@@ -16,9 +16,8 @@ var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
 
 var routes = require('./app/routes');
-var API =  require('./app/api/apiRoutes');
+var API =  require('./app/controllers/api');
 var Point = require('./models/points');
-var config = require('./config')
 
 var app = express();
 

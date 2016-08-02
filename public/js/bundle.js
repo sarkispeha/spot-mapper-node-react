@@ -383,8 +383,6 @@ var _react = require('react');
 
 var _react2 = _interopRequireDefault(_react);
 
-var _reactRouter = require('react-router');
-
 var _MapStore = require('../stores/MapStore');
 
 var _MapStore2 = _interopRequireDefault(_MapStore);
@@ -404,6 +402,8 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+// import {Link} from 'react-router';
+
 
 var Map = function (_React$Component) {
 	_inherits(Map, _React$Component);
@@ -434,11 +434,6 @@ var Map = function (_React$Component) {
 				_react2.default.createElement(
 					'div',
 					{ className: 'UpdatedText' },
-					_react2.default.createElement(
-						'p',
-						null,
-						'Current Zoom: 10'
-					),
 					_react2.default.createElement(
 						'p',
 						null,
@@ -630,7 +625,7 @@ var Map = function (_React$Component) {
 
 exports.default = Map;
 
-},{"../actions/MapActions":1,"../stores/MapStore":9,"./Form":4,"react":"react","react-router":"react-router"}],7:[function(require,module,exports){
+},{"../actions/MapActions":1,"../stores/MapStore":9,"./Form":4,"react":"react"}],7:[function(require,module,exports){
 'use strict';
 
 var _react = require('react');
@@ -689,6 +684,8 @@ var _Map = require('./components/Map');
 var _Map2 = _interopRequireDefault(_Map);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+// import Login from './component/Login';
 
 exports.default = _react2.default.createElement(
 	_reactRouter.Route,
