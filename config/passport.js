@@ -1,6 +1,6 @@
-
 import passport from 'passport';
 import request from 'request';
+import {Strategy as LocalStrategy} from 'passport-local';
 
 const User = require('../models/user');
 
