@@ -7,6 +7,13 @@ class LoginStore {
 		this.user = {};
 	}
 
+	onSignupSuccess(data){
+		console.log('this is the onSignupSuccess data from LoginStore.js', data)
+	}
+	onSignupFail(err){
+		console.log(err)
+	}
+
 	onLoginSuccess(data){
 		console.log('this is the data from LoginStore.js', data)
 		this.user = data;

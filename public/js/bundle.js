@@ -29,8 +29,8 @@ var LoginActions = function () {
 	_createClass(LoginActions, [{
 		key: 'postSignup',
 		value: function postSignup(signupData) {
-			var successAction = this.signupSuccess;
-			var failAction = this.signupFail;
+			var successAction = this.actions.signupSuccess;
+			var failAction = this.actions.signupFail;
 			console.log('signup data', signupData);
 			_mithril2.default.request({
 				method: 'POST',
@@ -50,8 +50,8 @@ var LoginActions = function () {
 	}, {
 		key: 'postLogin',
 		value: function postLogin(loginData) {
-			var successAction = this.loginSuccess;
-			var failAction = this.loginFail;
+			var successAction = this.actions.loginSuccess;
+			var failAction = this.actions.loginFail;
 			_mithril2.default.request({
 				method: 'POST',
 				url: '/appLogin',
@@ -940,6 +940,16 @@ var LoginStore = function () {
 	}
 
 	_createClass(LoginStore, [{
+		key: 'onSignupSuccess',
+		value: function onSignupSuccess(data) {
+			console.log('this is the onSignupSuccess data from LoginStore.js', data);
+		}
+	}, {
+		key: 'onSignupFail',
+		value: function onSignupFail(err) {
+			console.log(err);
+		}
+	}, {
 		key: 'onLoginSuccess',
 		value: function onLoginSuccess(data) {
 			console.log('this is the data from LoginStore.js', data);

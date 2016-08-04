@@ -12,8 +12,8 @@ class LoginActions {
 	}
 
 	postSignup(signupData){
-		let successAction = this.signupSuccess;
-		let failAction = this.signupFail;
+		let successAction = this.actions.signupSuccess;
+		let failAction = this.actions.signupFail;
 		console.log('signup data', signupData)
 		m.request({
 			method: 'POST',
@@ -32,8 +32,8 @@ class LoginActions {
 	}
 
 	postLogin(loginData){
-		let successAction = this.loginSuccess;
-		let failAction = this.loginFail;
+		let successAction = this.actions.loginSuccess;
+		let failAction = this.actions.loginFail;
 		m.request({
 			method: 'POST',
 			url : '/appLogin',
