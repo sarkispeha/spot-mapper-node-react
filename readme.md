@@ -1,6 +1,6 @@
 ## SPOT mapper
 
-My first attempt with a semi-IOT device. 
+My first attempt with a semi-IOT device. This app tracks the SPOT tracker in real-time anywhere worldwide every 10 minutes.
 
 ## Motivation
 

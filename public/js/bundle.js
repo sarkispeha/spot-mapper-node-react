@@ -42,7 +42,7 @@ var LoginActions = function () {
 					successAction(response);
 				},
 				unwrapError: function unwrapError(response) {
-					console.log('signup Error', response.error);
+					console.log('signup Error', response);
 					failAction(response);
 				}
 			});
@@ -459,6 +459,8 @@ var _react = require('react');
 
 var _react2 = _interopRequireDefault(_react);
 
+var _reactRouter = require('react-router');
+
 var _LoginStore = require('../stores/LoginStore');
 
 var _LoginStore2 = _interopRequireDefault(_LoginStore);
@@ -490,6 +492,10 @@ var Login = function (_React$Component) {
 		_this.state = {
 			signupEmail: '',
 			signupPassword: '',
+			signupSuccess: {
+				success: false,
+				msg: ''
+			},
 			email: '',
 			password: ''
 		};
@@ -502,6 +508,11 @@ var Login = function (_React$Component) {
 	}
 
 	_createClass(Login, [{
+		key: 'componentDidMount',
+		value: function componentDidMount() {
+			_LoginStore2.default.listen(this.onChange);
+		}
+	}, {
 		key: 'onChange',
 		value: function onChange(state) {
 			this.setState(state);
@@ -544,6 +555,7 @@ var Login = function (_React$Component) {
 					null,
 					'Signup'
 				),
+				this.state.signupSuccess.msg,
 				_react2.default.createElement(
 					'div',
 					{ className: 'signup-form' },
@@ -583,7 +595,7 @@ var Login = function (_React$Component) {
 
 exports.default = Login;
 
-},{"../actions/LoginActions":1,"../stores/LoginStore":11,"react":"react"}],8:[function(require,module,exports){
+},{"../actions/LoginActions":1,"../stores/LoginStore":11,"react":"react","react-router":"react-router"}],8:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -937,12 +949,17 @@ var LoginStore = function () {
 
 		this.bindActions(_LoginActions2.default);
 		this.user = {};
+		this.signupSuccess = {};
 	}
 
 	_createClass(LoginStore, [{
 		key: 'onSignupSuccess',
 		value: function onSignupSuccess(data) {
 			console.log('this is the onSignupSuccess data from LoginStore.js', data);
+			this.signupSuccess = { success: data.success,
+				msg: data.msg
+			};
+			window.success = this.signupSuccess;
 		}
 	}, {
 		key: 'onSignupFail',

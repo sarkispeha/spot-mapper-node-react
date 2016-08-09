@@ -1,4 +1,5 @@
 import React from 'react';
+import {Link} from 'react-router';
 import LoginStore from '../stores/LoginStore';
 import LoginActions from '../actions/LoginActions';
 
@@ -10,6 +11,10 @@ class Login extends React.Component{
 		this.state = {
 			signupEmail: '',
 			signupPassword: '',
+			signupSuccess: {
+				success: false,
+				msg: ''
+				},
 			email: '',
 			password: ''
 		}
@@ -18,6 +23,10 @@ class Login extends React.Component{
 		this.handleSignup = this.handleSignup.bind(this)
 		this.handleSubmit = this.handleSubmit.bind(this)
 		this.onChange = this.onChange.bind(this);
+	}
+
+	componentDidMount(){
+		LoginStore.listen(this.onChange);
 	}
 
 	onChange(state) {
@@ -54,6 +63,7 @@ class Login extends React.Component{
 				<h1>
 					Signup
 				</h1>
+				{this.state.signupSuccess.msg}
 				<div className='signup-form'>
 					<form>
 						<input type="email" name="signupEmail" placeholder="Email" value={this.state.signupEmail} onChange={this.handleInputChange}/>

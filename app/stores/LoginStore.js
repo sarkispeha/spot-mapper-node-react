@@ -5,10 +5,15 @@ class LoginStore {
 	constructor() {
 		this.bindActions(LoginActions);
 		this.user = {};
+		this.signupSuccess = {};
 	}
 
 	onSignupSuccess(data){
 		console.log('this is the onSignupSuccess data from LoginStore.js', data)
+		this.signupSuccess = {success: data.success,
+							msg: data.msg
+							};
+		window.success = this.signupSuccess;
 	}
 	onSignupFail(err){
 		console.log(err)

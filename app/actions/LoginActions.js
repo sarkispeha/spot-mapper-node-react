@@ -25,7 +25,7 @@ class LoginActions {
 				successAction(response);
 			},
 			unwrapError: function(response){
-				console.log('signup Error', response.error)
+				console.log('signup Error', response)
 				failAction(response);
 			}
 		})

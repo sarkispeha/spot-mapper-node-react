@@ -99,7 +99,10 @@ exports.postSignup = (req, res, next) => {
 		if (existingUser) {
 			console.log('errors', { msg: 'Account with that email address already exists.' });
 			// return res.redirect('/login');
-			res.send('existing User', existingUser)
+			res.send({success: false,
+					msg: existingUser
+				})
+			// res.send('existing User', existingUser)
 		}
 		user.save((err) => {
 			if (err) { return next(err); }
@@ -107,8 +110,10 @@ exports.postSignup = (req, res, next) => {
 				if (err) {
 					return next(err);
 				}
-				// res.redirect('/');
-				res.send({success: 'signup successful'})
+				// res.redirect('/map');
+				res.send({success: true,
+						msg: 'Thanks for signing up!'
+				})
 			});
 		});
 	});
