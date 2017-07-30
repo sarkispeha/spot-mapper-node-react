@@ -22,7 +22,6 @@ class Map extends React.Component{
 		return <div className="GMap">
 		  <div className='UpdatedText'>
 			<p>Current Zoom: 10</p>
-			<p>TESTTERT</p>
 			<p>Current Lat: {this.state.currentLat}</p>
 			<p>Current Long: {this.state.currentLong}</p>
 			<button onClick={this.createFriendsMarkers}>Mark friends on Map</button>

@@ -442,11 +442,6 @@ var Map = function (_React$Component) {
 					_react2.default.createElement(
 						'p',
 						null,
-						'TESTTERT'
-					),
-					_react2.default.createElement(
-						'p',
-						null,
 						'Current Lat: ',
 						this.state.currentLat
 					),
