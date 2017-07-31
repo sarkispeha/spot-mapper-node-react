@@ -397,6 +397,10 @@ var _Form = require('./Form');
 
 var _Form2 = _interopRequireDefault(_Form);
 
+var _moment = require('moment');
+
+var _moment2 = _interopRequireDefault(_moment);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -437,11 +441,6 @@ var Map = function (_React$Component) {
 					_react2.default.createElement(
 						'p',
 						null,
-						'Current Zoom: 10'
-					),
-					_react2.default.createElement(
-						'p',
-						null,
 						'Current Lat: ',
 						this.state.currentLat
 					),
@@ -457,10 +456,11 @@ var Map = function (_React$Component) {
 						'Mark friends on Map'
 					)
 				),
-				_react2.default.createElement(_Form2.default, null),
 				_react2.default.createElement('div', { className: 'GMap-canvas', ref: 'mapCanvas' })
 			);
 		}
+		// <Form/> //TAKE OUT FOR TIME BEING
+
 	}, {
 		key: 'componentDidMount',
 		value: function componentDidMount() {
@@ -525,10 +525,27 @@ var Map = function (_React$Component) {
 		key: 'createPath',
 		value: function createPath(pathPointData) {
 			var pathCoordinates = [];
+			console.log('INITIAL PATH POINT DATA', pathPointData);
+			pathPointData.map(function (obj) {
+				if (obj.created_at_unix) {
+					return obj;
+				} else if (obj.created_at) {
+					obj.created_at_unix = (0, _moment2.default)(obj.created_at).unix();
+					return obj;
+				} else {
+					return obj;
+				}
+			});
+			console.log('PATH POINT DATA 2', pathPointData);
+			pathPointData.sort(function (a, b) {
+				return a.created_at_unix - b.created_at_unix;
+			});
+			console.log('PATH POINT DATA 3', pathPointData);
 			pathPointData.forEach(function (obj) {
+				console.log(obj.created_at_unix);
 				pathCoordinates.push({ lat: obj.lat, lng: obj.long });
 			});
-			// console.log('pathCoordinates', pathCoordinates)
+			console.log('pathCoordinates', pathCoordinates);
 			return new google.maps.Polyline({
 				map: this.map,
 				path: pathCoordinates,
@@ -630,7 +647,7 @@ var Map = function (_React$Component) {
 
 exports.default = Map;
 
-},{"../actions/MapActions":1,"../stores/MapStore":9,"./Form":4,"react":"react","react-router":"react-router"}],7:[function(require,module,exports){
+},{"../actions/MapActions":1,"../stores/MapStore":9,"./Form":4,"moment":"moment","react":"react","react-router":"react-router"}],7:[function(require,module,exports){
 'use strict';
 
 var _react = require('react');

@@ -3,6 +3,7 @@ import {Link} from 'react-router';
 import MapStore from '../stores/MapStore';
 import MapActions from '../actions/MapActions';
 import Form from './Form'
+import moment from 'moment';
 
 class Map extends React.Component{
 
@@ -21,16 +22,15 @@ class Map extends React.Component{
 	render() {
 		return <div className="GMap">
 		  <div className='UpdatedText'>
-			<p>Current Zoom: 10</p>
 			<p>Current Lat: {this.state.currentLat}</p>
 			<p>Current Long: {this.state.currentLong}</p>
 			<button onClick={this.createFriendsMarkers}>Mark friends on Map</button>
 		  </div>
-		  <Form/>
 		  <div className='GMap-canvas' ref="mapCanvas">
 		  </div>
 		</div>
 	}
+	// <Form/> //TAKE OUT FOR TIME BEING
 
 	componentDidMount() {
   		// console.log('componentDidMount from maps is firing')
@@ -90,10 +90,27 @@ class Map extends React.Component{
 
   createPath(pathPointData) {
   	var pathCoordinates = []
+  	console.log('INITIAL PATH POINT DATA', pathPointData)
+  	pathPointData.map(function(obj){
+  		if(obj.created_at_unix){
+  			return obj;
+  		}else if(obj.created_at){
+  			obj.created_at_unix = moment(obj.created_at).unix();
+  			return obj;
+  		}else{
+  			return obj;
+  		}
+  	})
+  	console.log('PATH POINT DATA 2', pathPointData)
+  	pathPointData.sort(function(a,b){
+  		return a.created_at_unix - b.created_at_unix;
+  	})
+  	console.log('PATH POINT DATA 3', pathPointData)
   	pathPointData.forEach(function(obj){
+  		console.log(obj.created_at_unix)
 		pathCoordinates.push({lat : obj.lat, lng : obj.long});
 	});
-	// console.log('pathCoordinates', pathCoordinates)
+	console.log('pathCoordinates', pathCoordinates)
 	return new google.maps.Polyline({
 		map: this.map,					
 		path: pathCoordinates,

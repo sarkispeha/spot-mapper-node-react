@@ -21,7 +21,8 @@ var dependencies = [
   'react',
   'react-dom',
   'react-router',
-  'underscore'
+  'underscore',
+  'moment'
 ];
 
 gulp.task('browserify-vendor', function() {
