@@ -14,10 +14,13 @@
   height: 100%;
 }
 .help-me-button{
+	cursor: pointer;
 	width: 250px;
-	height: 75px;
+	padding: 15px;
+    border-radius: 25px;
 	background: peachpuff;
 	border: 1px solid #000;
+	text-align: center;
 }
 
 
