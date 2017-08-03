@@ -9,3 +9,10 @@ Grandma always wants to know where I am when heading off on adventures, now she'
 ## Tech and Libraries used:
 
 [SPOT GEN3 Tracker](http://www.findmespot.com/en/index.php?cid=100), Node, React, MongoDB, GoogleMaps API
+
+
+##To run
+sudo gulp
+sudo mongod
+sudo mongo
+sudo nodemon

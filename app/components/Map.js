@@ -21,13 +21,15 @@ class Map extends React.Component{
 
 	render() {
 		return <div className="GMap">
-		  <div className='UpdatedText'>
-			<p>Current Lat: {this.state.currentLat}</p>
-			<p>Current Long: {this.state.currentLong}</p>
-			<button onClick={this.createFriendsMarkers}>Mark friends on Map</button>
-		  </div>
-		  <div className='GMap-canvas' ref="mapCanvas">
-		  </div>
+
+			<div className='UpdatedText'>
+				<a href="https://www.patreon.com/user?u=2454334">Help me run the servers!</a>
+			  	<p>Current Lat: {this.state.currentLat}</p>
+				<p>Current Long: {this.state.currentLong}</p>
+				<button onClick={this.createFriendsMarkers}>Mark friends on Map</button>
+			</div>
+			<div className='GMap-canvas' ref="mapCanvas">
+			</div>
 		</div>
 	}
 	// <Form/> //TAKE OUT FOR TIME BEING
@@ -90,7 +92,7 @@ class Map extends React.Component{
 
   createPath(pathPointData) {
   	var pathCoordinates = []
-  	console.log('INITIAL PATH POINT DATA', pathPointData)
+
   	pathPointData.map(function(obj){
   		if(obj.created_at_unix){
   			return obj;
@@ -101,11 +103,11 @@ class Map extends React.Component{
   			return obj;
   		}
   	})
-  	console.log('PATH POINT DATA 2', pathPointData)
+
   	pathPointData.sort(function(a,b){
   		return a.created_at_unix - b.created_at_unix;
   	})
-  	console.log('PATH POINT DATA 3', pathPointData)
+
   	pathPointData.forEach(function(obj){
   		console.log(obj.created_at_unix)
 		pathCoordinates.push({lat : obj.lat, lng : obj.long});
