@@ -23,7 +23,7 @@ class Map extends React.Component{
 		return <div className="GMap">
 
 			<div className='UpdatedText'>
-				<a href="https://www.patreon.com/user?u=2454334">
+				<a href="https://www.patreon.com/bePatron?c=402586&rid=1890088">
 					<div className="help-me-button">Help me run the servers!</div>
 				</a>
 			  	<p>Current Lat: {this.state.currentLat}</p>
