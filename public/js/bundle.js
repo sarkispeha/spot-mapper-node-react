@@ -438,11 +438,11 @@ var Map = function (_React$Component) {
 					'div',
 					{ className: 'UpdatedText' },
 					_react2.default.createElement(
-						'a',
-						{ href: 'https://www.patreon.com/user?u=2454334' },
+						'div',
+						{ className: 'help-me-button' },
 						_react2.default.createElement(
-							'div',
-							{ className: 'help-me-button' },
+							'a',
+							{ href: 'https://www.patreon.com/bePatron?c=402586&rid=1890088' },
 							'Help me run the servers!'
 						)
 					),
