@@ -23,7 +23,9 @@ class Map extends React.Component{
 		return <div className="GMap">
 
 			<div className='UpdatedText'>
-				<a href="https://www.patreon.com/user?u=2454334">Help me run the servers!</a>
+				<a href="https://www.patreon.com/user?u=2454334">
+					<div className="help-me-button">Help me run the servers!</div>
+				</a>
 			  	<p>Current Lat: {this.state.currentLat}</p>
 				<p>Current Long: {this.state.currentLong}</p>
 				<button onClick={this.createFriendsMarkers}>Mark friends on Map</button>

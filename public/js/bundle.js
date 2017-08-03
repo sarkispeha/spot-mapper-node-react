@@ -440,7 +440,11 @@ var Map = function (_React$Component) {
 					_react2.default.createElement(
 						'a',
 						{ href: 'https://www.patreon.com/user?u=2454334' },
-						'Help me run the servers!'
+						_react2.default.createElement(
+							'div',
+							{ className: 'help-me-button' },
+							'Help me run the servers!'
+						)
 					),
 					_react2.default.createElement(
 						'p',

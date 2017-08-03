@@ -89,23 +89,23 @@ var getLastFiftyPoints = () => {
 		var parsedBody = JSON.parse(body)
 		// console.log('BODYYY FROM GET LAST 50', JSON.stringify(parsedBody))
 		var fiftyMessages = parsedBody.response.feedMessageResponse.messages.message;
-		console.log('FIFTYMESSAGES', fiftyMessages)
+		// console.log('FIFTYMESSAGES', fiftyMessages)
+		console.log('FIFTYMESSAGES CHECK')
 		Point.find({}, (err, results)=>{
 			// var messageId = parsedBody.response.feedMessageResponse.messages.message.id;
-			console.log('getting points');
+			console.log('getting points for array to check if lost');
 			console.log('point find err ', err);
 			let points = results;
 			let pointIds = points.map(function(point){
 				return point.message_id;
 			})
-			console.log('POINT ID ARRAY', pointIds)
+			// console.log('POINT ID ARRAY', pointIds)
 			//LOOP THROUGH LAST 50 MESSAGES
 			fiftyMessages.forEach(function(message){
 			//IF REQUESTED MESSAGE ID NOT IN pointIds ARRAY THEN SAVE
-				console.log('MESSAGE', message)
 				if(pointIds.indexOf(message.id) == -1){
 					//SAVE TO POINTS COLLECTION
-					console.log('POINT NOT FOUND, ADDING FROM LAST 50: ', message)
+					console.log('POINT NOT FOUND, ADDING FROM LAST 50: ', message.id)
 					let createdAtUnix = moment(message.dateTime).unix();
 					let createdAtFormatted = moment(message.dateTime).format('L LTS');
 					Point.findOneAndUpdate(
@@ -114,7 +114,7 @@ var getLastFiftyPoints = () => {
 						{upsert: true, new: true}
 					).exec()
 				}else{
-					console.log('POINT EXISTS, NOT ADDING', message)
+					console.log('POINT EXISTS, NOT ADDING', message.id)
 				}
 			})
 
