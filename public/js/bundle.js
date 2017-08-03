@@ -35,7 +35,6 @@ var MapActions = function () {
 				method: 'GET',
 				url: '/api/getPoints',
 				unwrapSuccess: function unwrapSuccess(response) {
-					// console.log('response from mithril request ', response)
 					successAction(response);
 				},
 				unwrapError: function unwrapError(response) {
@@ -439,6 +438,11 @@ var Map = function (_React$Component) {
 					'div',
 					{ className: 'UpdatedText' },
 					_react2.default.createElement(
+						'a',
+						{ href: 'https://www.patreon.com/user?u=2454334' },
+						'Help me run the servers!'
+					),
+					_react2.default.createElement(
 						'p',
 						null,
 						'Current Lat: ',
@@ -525,7 +529,7 @@ var Map = function (_React$Component) {
 		key: 'createPath',
 		value: function createPath(pathPointData) {
 			var pathCoordinates = [];
-			console.log('INITIAL PATH POINT DATA', pathPointData);
+
 			pathPointData.map(function (obj) {
 				if (obj.created_at_unix) {
 					return obj;
@@ -536,11 +540,11 @@ var Map = function (_React$Component) {
 					return obj;
 				}
 			});
-			console.log('PATH POINT DATA 2', pathPointData);
+
 			pathPointData.sort(function (a, b) {
 				return a.created_at_unix - b.created_at_unix;
 			});
-			console.log('PATH POINT DATA 3', pathPointData);
+
 			pathPointData.forEach(function (obj) {
 				console.log(obj.created_at_unix);
 				pathCoordinates.push({ lat: obj.lat, lng: obj.long });

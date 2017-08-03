@@ -84,8 +84,51 @@ var getPoints = () => {
 	})
 }
 
+var getLastFiftyPoints = () => {
+	request.get('https://api.findmespot.com/spot-main-web/consumer/rest-api/2.0/public/feed/0qyLXAX1l0neorapAYdqS0pnuDtThqtS4/message.json', function(error, response, body){
+		var parsedBody = JSON.parse(body)
+		// console.log('BODYYY FROM GET LAST 50', JSON.stringify(parsedBody))
+		var fiftyMessages = parsedBody.response.feedMessageResponse.messages.message;
+		console.log('FIFTYMESSAGES', fiftyMessages)
+		Point.find({}, (err, results)=>{
+			// var messageId = parsedBody.response.feedMessageResponse.messages.message.id;
+			console.log('getting points');
+			console.log('point find err ', err);
+			let points = results;
+			let pointIds = points.map(function(point){
+				return point.message_id;
+			})
+			console.log('POINT ID ARRAY', pointIds)
+			//LOOP THROUGH LAST 50 MESSAGES
+			fiftyMessages.forEach(function(message){
+			//IF REQUESTED MESSAGE ID NOT IN pointIds ARRAY THEN SAVE
+				console.log('MESSAGE', message)
+				if(pointIds.indexOf(message.id) == -1){
+					//SAVE TO POINTS COLLECTION
+					console.log('POINT NOT FOUND, ADDING FROM LAST 50: ', message)
+					let createdAtUnix = moment(message.dateTime).unix();
+					let createdAtFormatted = moment(message.dateTime).format('L LTS');
+					Point.findOneAndUpdate(
+						{message_id: message.id},
+						{message_id: message.id, long: message.longitude, lat: message.latitude, created_at_unix : createdAtUnix, created_at_formatted: createdAtFormatted},
+						{upsert: true, new: true}
+					).exec()
+				}else{
+					console.log('POINT EXISTS, NOT ADDING', message)
+				}
+			})
+
+		})
+	})//END REQUEST GET
+}
+
 setInterval(function() {
 	getPoints();
 }, 240000);
 
+setInterval(function() {
+	getLastFiftyPoints();
+}, 3600000);
+
 getPoints();
+getLastFiftyPoints();
