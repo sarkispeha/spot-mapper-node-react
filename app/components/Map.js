@@ -28,6 +28,7 @@ class Map extends React.Component{
 						Help me run the servers!
 					</a>
 				</div>
+				<a href="https://sarkelviajero.wordpress.com/">Link to Blog</a>
 			  	<p>Current Lat: {this.state.currentLat}</p>
 				<p>Current Long: {this.state.currentLong}</p>
 				<button onClick={this.createFriendsMarkers}>Mark friends on Map</button>

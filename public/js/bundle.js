@@ -447,6 +447,11 @@ var Map = function (_React$Component) {
 						)
 					),
 					_react2.default.createElement(
+						'a',
+						{ href: 'https://sarkelviajero.wordpress.com/' },
+						'Link to Blog'
+					),
+					_react2.default.createElement(
 						'p',
 						null,
 						'Current Lat: ',
