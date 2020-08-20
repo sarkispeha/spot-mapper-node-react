@@ -10,7 +10,7 @@ mongoose.connect(config.database);
 
 var getPoints = () => {
 	console.log('WORKER IS FIRING TO SPOT API', new Date());
-	request.get('https://api.findmespot.com/spot-main-web/consumer/rest-api/2.0/public/feed/0qyLXAX1l0neorapAYdqS0pnuDtThqtS4/latest.json', function(error, response, body){
+	request.get('https://api.findmespot.com/spot-main-web/consumer/rest-api/2.0/public/feed/0N6gpW8lWcRWBLb8JWtd70KWTOyNMWsHo/latest.json', function(error, response, body){
 		// console.log('this is the body from first request', body);
 		var parsedBody = JSON.parse(body)
 		if(parsedBody.response){
@@ -85,7 +85,7 @@ var getPoints = () => {
 }
 
 var getLastFiftyPoints = () => {
-	request.get('https://api.findmespot.com/spot-main-web/consumer/rest-api/2.0/public/feed/0qyLXAX1l0neorapAYdqS0pnuDtThqtS4/message.json', function(error, response, body){
+	request.get('https://api.findmespot.com/spot-main-web/consumer/rest-api/2.0/public/feed/0N6gpW8lWcRWBLb8JWtd70KWTOyNMWsHo/message.json', function(error, response, body){
 		var parsedBody = JSON.parse(body)
 		// console.log('BODYYY FROM GET LAST 50', JSON.stringify(parsedBody))
 		var fiftyMessages = parsedBody.response.feedMessageResponse.messages.message;
