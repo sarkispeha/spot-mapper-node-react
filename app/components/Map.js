@@ -32,7 +32,6 @@ class Map extends React.Component{
 			  	<p>Current Lat: {this.state.currentLat}</p>
 				<p>Current Long: {this.state.currentLong}</p>
 				<p>Current Altitude: {this.state.currentAlt}</p>
-				<p>hello>?</p>
 				<button onClick={() => this.createFriendsMarkers}>Mark friends on Map</button>
 			</div>
 			<div className='GMap-canvas' ref="mapCanvas">
