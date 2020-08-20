@@ -13,6 +13,7 @@ var getPoints = () => {
 	request.get('https://api.findmespot.com/spot-main-web/consumer/rest-api/2.0/public/feed/0N6gpW8lWcRWBLb8JWtd70KWTOyNMWsHo/latest.json', function(error, response, body){
 		console.log('THE BODY FROM REQUEST', body);
 		var parsedBody = JSON.parse(body)
+		console.log('THE PARSED BODY FROM REQUEST', parsedBody);
 		if(parsedBody.response){
 
 			var messageId = parsedBody.response.feedMessageResponse.messages.message.id;
