@@ -115,7 +115,7 @@ class Map extends React.Component{
   	})
 
   	pathPointData.forEach(function(obj){
-  		console.log(obj.created_at_unix)
+  		// console.log(obj.created_at_unix)
 		pathCoordinates.push({lat : obj.lat, lng : obj.long});
 	});
 	console.log('pathCoordinates', pathCoordinates)
@@ -137,8 +137,8 @@ class Map extends React.Component{
   		var lastCoordinate = {lat: lastPoint.lat , lng : lastPoint.long, message_id : lastPoint.message_id}
   		this.setState({
   			currentLong: lastPoint.long,
-			  currentLat: lastPoint.lat,
-			  currentAlt: lastPoint.alt,
+			currentLat: lastPoint.lat,
+			currentAlt: lastPoint.alt,
   		})
   		if(this.state.friendUpdate.isNewPoint == true){
   			this.state.friendUpdate.isNewPoint = false;
