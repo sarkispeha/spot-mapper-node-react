@@ -32,7 +32,8 @@ class Map extends React.Component{
 			  	<p>Current Lat: {this.state.currentLat}</p>
 				<p>Current Long: {this.state.currentLong}</p>
 				<p>Current Altitude: {this.state.currentAlt}</p>
-				<button onClick={this.createFriendsMarkers}>Mark friends on Map</button>
+				<p>hello>?</p>
+				<button onClick={() => this.createFriendsMarkers}>Mark friends on Map</button>
 			</div>
 			<div className='GMap-canvas' ref="mapCanvas">
 			</div>
@@ -133,7 +134,7 @@ class Map extends React.Component{
   	// console.log('pathPointData from mapcenter', pathPointData)
   	if (pathPointData != undefined){
   		let lastPoint = pathPointData[pathPointData.length-1];
-  		// console.log('last Point', lastPoint)
+  		console.log('last Point', lastPoint)
   		var lastCoordinate = {lat: lastPoint.lat , lng : lastPoint.long, message_id : lastPoint.message_id}
   		this.setState({
   			currentLong: lastPoint.long,
