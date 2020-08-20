@@ -31,7 +31,7 @@
     "mandrill-api": "^1.0.45",
     "mithril": "^0.2.5",
     "moment": "^2.14.1",
-    "mongoose": "^4.2.5",
+    "mongoose": "^5.10.0",
     "morgan": "^1.6.1",
     "react": "^0.14.2",
     "react-dom": "^0.14.2",
