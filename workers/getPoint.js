@@ -9,9 +9,8 @@ var config = require('../config')
 mongoose.connect(config.database);
 
 var getPoints = () => {
-	console.log('WORKER IS FIRING TO SPOT API', new Date());
+	// console.log('WORKER IS FIRING TO SPOT API', new Date());
 	request.get('https://api.findmespot.com/spot-main-web/consumer/rest-api/2.0/public/feed/0N6gpW8lWcRWBLb8JWtd70KWTOyNMWsHo/latest.json', function(error, response, body){
-	console.log('THE BODY FROM REQUEST', body);
 		var parsedBody = JSON.parse(body);
 		console.log('THE PARSED BODY FROM REQUEST', parsedBody);
 		if(parsedBody.response){
@@ -21,12 +20,13 @@ var getPoints = () => {
 			var messageId = parsedBody.response.feedMessageResponse.messages.message.id;
 			var latitude = parsedBody.response.feedMessageResponse.messages.message.latitude;
 			var longitude = parsedBody.response.feedMessageResponse.messages.message.longitude;
+			// TODO: add the altitude
 			// var created_at = parsedBody.response.feedMessageResponse.messages.message.dateTime.split('').splice(0,19).join('');
 			var createdAtUnix = moment(parsedBody.response.feedMessageResponse.messages.message.dateTime).unix()
 			var createdAtFormatted = moment(parsedBody.response.feedMessageResponse.messages.message.dateTime).format('L LTS');
-			console.log('MOMENT PARSE', moment(parsedBody.response.feedMessageResponse.messages.message.dateTime).format('L LTS') )
-			console.log('MOMENT PARSE 2', moment(parsedBody.response.feedMessageResponse.messages.message.dateTime).unix() )
-			console.log('FROM WORKER: POINT ID', messageId);
+			// console.log('MOMENT PARSE', moment(parsedBody.response.feedMessageResponse.messages.message.dateTime).format('L LTS') )
+			// console.log('MOMENT PARSE 2', moment(parsedBody.response.feedMessageResponse.messages.message.dateTime).unix() )
+			// console.log('FROM WORKER: POINT ID', messageId);
 			console.log('lat: ', latitude, 'long :', longitude, 'created_at :', createdAtFormatted)
 
 			// find one and update the previous point if not new
@@ -90,16 +90,14 @@ var getPoints = () => {
 var getLastFiftyPoints = () => {
 	request.get('https://api.findmespot.com/spot-main-web/consumer/rest-api/2.0/public/feed/0N6gpW8lWcRWBLb8JWtd70KWTOyNMWsHo/message.json', function(error, response, body){
 		var parsedBody = JSON.parse(body)
-		console.log('BODYYY FROM GET LAST 50', JSON.stringify(parsedBody))
 		if (parsedBody.errors) {
-			console.log('THERE ARE ERRORS, PLEASE RETURN')
+			console.log('THERE ARE ERRORS')
 			return;
 		}
 		var fiftyMessages = parsedBody.response.feedMessageResponse.messages.message;
 		// console.log('FIFTYMESSAGES', fiftyMessages)
 		Point.find({}, (err, results)=>{
 			// var messageId = parsedBody.response.feedMessageResponse.messages.message.id;
-			console.log('getting points for array to check if lost');
 			console.log('point find err ', err);
 			let points = results;
 			let pointIds = points.map(function(point){
@@ -107,6 +105,7 @@ var getLastFiftyPoints = () => {
 			})
 			// console.log('POINT ID ARRAY', pointIds)
 			//LOOP THROUGH LAST 50 MESSAGES
+			// TODO: add array check here
 			fiftyMessages.forEach(function(message){
 			//IF REQUESTED MESSAGE ID NOT IN pointIds ARRAY THEN SAVE
 				if(pointIds.indexOf(message.id) == -1){
@@ -130,7 +129,7 @@ var getLastFiftyPoints = () => {
 
 setInterval(function() {
 	getPoints();
-}, 240000);
+}, 420000);
 
 setInterval(function() {
 	getLastFiftyPoints();
