@@ -89,7 +89,6 @@ var getPoints = () => {
 
 var getLastFiftyPoints = () => {
 	request.get('https://api.findmespot.com/spot-main-web/consumer/rest-api/2.0/public/feed/0N6gpW8lWcRWBLb8JWtd70KWTOyNMWsHo/message.json', function(error, response, body){
-		         https://api.findmespot.com/spot-main-web/consumer/rest-api/2.0/public/feed/0N6gpW8lWcRWBLb8JWtd70KWTOyNMWsHo/latest.json	
 	var parsedBody = JSON.parse(body)
 		console.log('BODYYY FROM GET LAST 50', JSON.stringify(parsedBody))
 		if (parsedBody.errors) {
