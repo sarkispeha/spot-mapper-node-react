@@ -23,14 +23,15 @@ class Map extends React.Component{
 		return <div className="GMap">
 
 			<div className='UpdatedText'>
-				<div className="help-me-button">
+				{/* <div className="help-me-button">
 					<a href="https://www.patreon.com/bePatron?c=402586&rid=1890088">
 						Help me run the servers!
 					</a>
-				</div>
+				</div> */}
 				<a href="https://sarkelviajero.wordpress.com/">Link to Blog</a>
 			  	<p>Current Lat: {this.state.currentLat}</p>
 				<p>Current Long: {this.state.currentLong}</p>
+				<p>Current Altitude: {this.state.currentAlt}</p>
 				<button onClick={this.createFriendsMarkers}>Mark friends on Map</button>
 			</div>
 			<div className='GMap-canvas' ref="mapCanvas">
@@ -136,7 +137,8 @@ class Map extends React.Component{
   		var lastCoordinate = {lat: lastPoint.lat , lng : lastPoint.long, message_id : lastPoint.message_id}
   		this.setState({
   			currentLong: lastPoint.long,
-  			currentLat: lastPoint.lat
+			  currentLat: lastPoint.lat,
+			  currentAlt: lastPoint.alt,
   		})
   		if(this.state.friendUpdate.isNewPoint == true){
   			this.state.friendUpdate.isNewPoint = false;

@@ -21,18 +21,19 @@ var getPoints = () => {
 			var latitude = parsedBody.response.feedMessageResponse.messages.message.latitude;
 			var longitude = parsedBody.response.feedMessageResponse.messages.message.longitude;
 			// TODO: add the altitude
+			var altitude = parsedBody.response.feedMessageResponse.messages.message.altitude;
 			// var created_at = parsedBody.response.feedMessageResponse.messages.message.dateTime.split('').splice(0,19).join('');
 			var createdAtUnix = moment(parsedBody.response.feedMessageResponse.messages.message.dateTime).unix()
 			var createdAtFormatted = moment(parsedBody.response.feedMessageResponse.messages.message.dateTime).format('L LTS');
 			// console.log('MOMENT PARSE', moment(parsedBody.response.feedMessageResponse.messages.message.dateTime).format('L LTS') )
 			// console.log('MOMENT PARSE 2', moment(parsedBody.response.feedMessageResponse.messages.message.dateTime).unix() )
 			// console.log('FROM WORKER: POINT ID', messageId);
-			console.log('lat: ', latitude, 'long :', longitude, 'created_at :', createdAtFormatted)
+			console.log('lat: ', latitude, 'long :', longitude, 'created_at :', createdAtFormatted, 'altitude :', altitude)
 
 			// find one and update the previous point if not new
 			Point.findOneAndUpdate(
 				{message_id: messageId},
-				{message_id: messageId, long: longitude, lat: latitude, created_at_unix : createdAtUnix, created_at_formatted: createdAtFormatted},
+				{message_id: messageId, long: longitude, lat: latitude, alt: altitude, created_at_unix : createdAtUnix, created_at_formatted: createdAtFormatted},
 				{upsert: true, new: true}
 			).exec()
 		}else{
