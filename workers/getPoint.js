@@ -92,6 +92,7 @@ var getLastFiftyPoints = () => {
 		var parsedBody = JSON.parse(body)
 		console.log('BODYYY FROM GET LAST 50', JSON.stringify(parsedBody))
 		if (parsedBody.errors) {
+			console.log('THERE ARE ERRORS, PLEASE RETURN')
 			return;
 		}
 		var fiftyMessages = parsedBody.response.feedMessageResponse.messages.message;
