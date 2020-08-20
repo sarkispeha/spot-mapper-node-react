@@ -11,7 +11,7 @@ mongoose.connect(config.database);
 var getPoints = () => {
 	console.log('WORKER IS FIRING TO SPOT API', new Date());
 	request.get('https://api.findmespot.com/spot-main-web/consumer/rest-api/2.0/public/feed/0N6gpW8lWcRWBLb8JWtd70KWTOyNMWsHo/latest.json', function(error, response, body){
-		// console.log('this is the body from first request', body);
+		console.log('THE BODY FROM REQUEST', body);
 		var parsedBody = JSON.parse(body)
 		if(parsedBody.response){
 
