@@ -34,7 +34,7 @@
     "history": "^1.17.0",
     "mailchimp-api": "^2.0.7",
     "mandrill-api": "^1.0.45",
-    "mithril": "^0.2.5",
+    "mithril": "^1.1.7",
     "moment": "^2.14.1",
     "mongoose": "^4.2.5",
     "morgan": "^1.6.1",
