@@ -1,5 +1,5 @@
 //config.js
 
 module.exports = {
-  database: process.env.MONGODB_URI || 'localhost/spotMapperReact'
+  database: process.env.DB_URI || 'localhost/spotMapperReact'
 };
